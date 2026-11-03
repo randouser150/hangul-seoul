@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seul Hangıl Hattı</title>
+<meta name="description" content="Seul gezisi için Hangıl okuma pratiği: metro, market, yemek; gerçek fotoğraflar ve videolu dersler.">
+<style>*,*::before,*::after{box-sizing:border-box}[hidden]{display:none!important}img{max-width:100%}</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&family=Nanum+Pen+Script&family=Nanum+Myeongjo:wght@700&family=Do+Hyeon&family=Black+Han+Sans&display=swap">
+<style>
+/* Layout: a Seoul subway map. Each level is a numbered metro line, each round a station; lessons run on one centered card. */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#17202a; --muted:#5d6b78; --line:#d9dfe5;
+  --ok:#0a8a4a; --ok-bg:#e3f5ea; --bad:#c9372c; --bad-bg:#fbe7e5;
+  --l2:#00a84d; --l3:#ef7c1c; --l4:#00a4e3; --l5:#996cac; --l1:#0052a4; --l9:#a08f4f;
+  --hangul:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --ui:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161b; --surface:#1a2128; --fg:#e8edf2; --muted:#9aa7b3; --line:#2c353e;
+  --ok:#3fcf82; --ok-bg:#16352a; --bad:#ff7a6e; --bad-bg:#3a1f1d; --l1:#4d8fe0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161b; --surface:#1a2128; --fg:#e8edf2; --muted:#9aa7b3; --line:#2c353e;
+  --ok:#3fcf82; --ok-bg:#16352a; --bad:#ff7a6e; --bad-bg:#3a1f1d; --l1:#4d8fe0; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-size:1.5rem;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1 span{font-family:var(--hangul);font-weight:700}
+.sub{color:var(--muted);margin:0;font-size:.95rem}
+.lbl{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--l4);outline-offset:2px}
+.btn{border:0;border-radius:10px;padding:12px 18px;font-weight:600;background:var(--fg);color:var(--bg)}
+.btn.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+
+/* map */
+.line{background:var(--surface);border-radius:14px;padding:16px 16px 18px;display:flex;flex-direction:column;gap:12px;border:1px solid var(--line)}
+.line-head{display:flex;align-items:center;gap:10px}
+.badge{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-family:var(--mono);flex:none}
+.line-head h2{margin:0;font-size:1.05rem}
+.line-head p{margin:0;color:var(--muted);font-size:.85rem}
+.track{position:relative;display:flex;gap:8px;overflow-x:auto;padding:6px 2px 4px}
+.track::before{content:"";position:absolute;left:24px;right:24px;top:22px;height:6px;border-radius:3px;background:var(--c)}
+.stop{position:relative;flex:1 0 96px;display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;padding:0;text-align:center}
+.dot{width:38px;height:38px;border-radius:50%;background:var(--surface);border:6px solid var(--c);display:grid;place-items:center;font-size:.8rem;font-weight:700;color:var(--c)}
+.stop.done .dot{background:var(--c);color:#fff}
+.stop .nm{font-size:.85rem;font-weight:600;line-height:1.25}
+.stop .hw{font-family:var(--hangul);color:var(--muted);font-size:.85rem}
+.review{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.review p{margin:0;font-size:.9rem;color:var(--muted);min-width:0;flex:1 1 220px}
+
+/* lesson */
+.bar{display:flex;align-items:center;gap:12px}
+.bar .x{background:none;border:0;font-size:1.4rem;line-height:1;padding:4px 8px;color:var(--muted)}
+.prog{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--c);transition:width .3s}
+.card{background:var(--surface);border:1px solid var(--line);border-top:8px solid var(--c);border-radius:16px;padding:24px 20px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.big{font-family:var(--hangul);font-weight:500;font-size:clamp(4.5rem,22vw,8.5rem);line-height:1.1;letter-spacing:.02em;word-break:keep-all}
+.big.long{font-size:clamp(2.6rem,11vw,4.6rem)}
+.roman{font-family:var(--mono);font-size:1.35rem}
+.mean{font-size:1.1rem;font-weight:600}
+.note{color:var(--muted);font-size:.95rem;max-width:46ch;margin:0}
+.speak{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:8px 16px;font-weight:600}
+.speak svg{width:18px;height:18px}
+.q{font-weight:600;margin:0}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.opt{border:2px solid var(--line);background:var(--bg);border-radius:12px;padding:14px 10px;font-family:var(--mono);font-size:1.05rem;min-height:56px;overflow-wrap:anywhere}
+.opt:hover:not(:disabled){border-color:var(--c)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.opt:disabled{cursor:default}
+.opt .k{font-size:.7rem;color:var(--muted);margin-right:6px}
+.fb{min-height:1.5em;margin:0;font-weight:600}
+.fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.shake{animation:sh .35s}
+@keyframes sh{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){.shake{animation:none}.prog i{transition:none}}
+.warn{font-size:.85rem;color:var(--bad);margin:0}
+.foot{color:var(--muted);font-size:.8rem;text-align:center;margin:0}
+@media (max-width:420px){.opts{grid-template-columns:1fr}}
+/* tools row */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tool{display:flex;gap:12px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;font-size:.88rem;color:var(--muted);min-width:0}
+.tool b{color:var(--fg);font-size:.98rem}
+.tool:disabled{opacity:.5;cursor:default}
+.tool:hover:not(:disabled){border-color:var(--fg)}
+.ti{font-family:var(--hangul);font-weight:700;color:var(--fg);font-size:1.05rem;white-space:nowrap;flex:none}
+@media (max-width:520px){.tools{grid-template-columns:1fr}}
+/* breakdown tiles */
+.tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tile{display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px solid var(--line);background:var(--bg);border-radius:12px;padding:8px 12px;min-width:72px;transition:transform .15s,border-color .15s}
+.tile.on{border-color:var(--c);transform:translateY(-3px)}
+.ts{font-family:var(--hangul);font-size:1.9rem;font-weight:500;line-height:1.2}
+.tj{font-family:var(--hangul);font-size:.9rem;color:var(--muted)}
+.tr{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.tiny{font-size:.78rem;color:var(--muted);margin:0;max-width:46ch}
+.real{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center}
+.real a,a.speak{color:var(--fg);text-decoration:none;font-weight:600;font-size:.9rem;display:inline-flex;align-items:center;gap:6px}
+.real a{border-bottom:2px solid var(--c);padding-bottom:1px}
+.bigspeak{width:120px;height:120px;border-radius:50%;border:0;background:var(--c);color:#fff;display:grid;place-items:center}
+.bigspeak svg{width:56px;height:56px}
+.opts.hangul .opt{font-family:var(--hangul);font-size:1.7rem}
+/* signs: each is a self-contained object with its own fixed colors */
+.sign{border-radius:10px;padding:14px 22px;max-width:100%}
+.sign .big{display:block}
+.sign-metro{background:#1d2a3a;color:#fff;border-bottom:8px solid var(--c);font-family:var(--hangul)}
+.sign-metro .big{font-weight:700}
+.sign-store{background:#4b2a8a;color:#fff;border-radius:6px;box-shadow:inset 0 -10px 0 #6fd2c4}
+.sign-store .big{font-family:"Do Hyeon",var(--hangul);font-weight:400}
+.sign-menu{background:#2f3a33;color:#f4f1e6;border:6px solid #8a6a45}
+.sign-menu .big{font-family:"Nanum Pen Script",cursive;font-weight:400;font-size:clamp(5rem,26vw,9.5rem)}
+.sign-menu .big.long{font-size:clamp(3.2rem,14vw,5.6rem)}
+.sign-serif{background:#fbf8f1;color:#222;border:1px solid #d8d0c0}
+.sign-serif .big{font-family:"Nanum Myeongjo",serif;font-weight:700}
+.sign-poster{background:#ffd400;color:#111}
+.sign-poster .big{font-family:"Black Han Sans",var(--hangul);font-weight:400}
+/* lab */
+.grp{width:100%;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:flex;flex-direction:column;align-items:center;min-width:46px;padding:6px 6px 4px;border:1.5px solid var(--line);background:var(--bg);border-radius:10px}
+.chip b{font-family:var(--hangul);font-size:1.25rem;font-weight:500;line-height:1.2}
+.chip small{font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+.chip.sel{border-color:var(--c);background:var(--c);color:#fff}
+.chip.sel small{color:#fff}
+.okc{color:var(--ok)}
+.ph{margin:0;width:100%;border-radius:12px;overflow:hidden;background:var(--line)}
+.ph img{display:block;width:100%;max-height:52vh;object-fit:contain;background:#000}
+.vid{width:100%;display:flex;flex-direction:column;gap:8px}
+.vbtn{display:flex;align-items:center;gap:12px;text-align:left;border:1.5px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 14px;color:#c4302b;font-weight:600}
+.vbtn span{color:var(--fg);font-size:.95rem;line-height:1.3}
+.vbtn small{color:var(--muted);font-weight:400}
+.vframe{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;border-radius:12px;overflow:hidden;background:#000}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.credits{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-size:.85rem;color:var(--muted)}
+.credits summary{cursor:pointer;font-weight:600;color:var(--fg)}
+.credits ul{padding-left:18px;margin:8px 0;display:flex;flex-direction:column;gap:4px}
+.credits a{color:var(--fg);overflow-wrap:anywhere}
+</style>
+
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+const LINES = [
+ {n:2, c:"--l2", name:"Tuzak harfler", desc:"Karıştırdığın sesler: ㅓ/ㅗ/ㅜ, ㅇ/ㅎ, birleşik ünlüler, ses kayması", rounds:[
+  {name:"ㅓ ㅗ ㅜ ㅡ", hw:"서울", vid:{id:"s5aobqyEaMQ",t:1243,title:"Go! Billy Korean · ㅓ ㅜ ㅡ ㅣ bölümü (20:43)"}, tip:"Dört 'o/u' sesi. Çıkıntının yönüne bak: sola bakan ㅓ, yukarı bakan ㅗ, aşağı bakan ㅜ, düz çizgi ㅡ.", items:[
+   {h:"어", r:"eo", m:"ㅓ sesi", n:"Ağız açık 'o', 'a' ile 'o' arası. Çıkıntı sola bakıyor."},
+   {h:"오", r:"o", m:"ㅗ sesi", n:"Dudaklar yuvarlak, Türkçe 'o'. Çıkıntı yukarı."},
+   {h:"우", r:"u", m:"ㅜ sesi", n:"Türkçe 'u'. Çıkıntı aşağı."},
+   {h:"으", r:"eu", m:"ㅡ sesi", n:"Türkçe 'ı'ya yakın. Düz yatay çizgi."},
+   {h:"서", r:"seo", m:"s + ㅓ", n:"서울'un ilk hecesi. 'So' gibi, ağız açık."},
+   {h:"소", r:"so", m:"s + ㅗ", n:"Yuvarlak 'so'."},
+   {h:"수", r:"su", m:"s + ㅜ", n:"'Su' gibi."},
+   {h:"서울", r:"seo-ul", m:"Seul", n:"Başta 'suhul' okumuştun: ㅓ 'o' sesidir, 울'daki ㅇ sessizdir."}]},
+  {name:"ㅇ ve ㅎ", hw:"홍대", vid:{id:"s5aobqyEaMQ",t:848,title:"Go! Billy Korean · ㄹ ve ㅇ bölümü (14:08)"}, tip:"ㅇ hece başında sessizdir, sonda 'ng' olur. 'H' sesi sadece ㅎ'de var: üstünde şapka gibi çizgiler var.", items:[
+   {h:"아", r:"a", m:"ㅇ + ㅏ", n:"Baştaki ㅇ sessiz, sadece yer tutar."},
+   {h:"하", r:"ha", m:"ㅎ + ㅏ", n:"ㅎ = h. Tepesindeki şapkaya bak."},
+   {h:"앙", r:"ang", m:"sonda ㅇ", n:"Hecenin altındaki ㅇ = 'ng'."},
+   {h:"항", r:"hang", m:"ㅎ + ㅏ + ㅇ", n:"Başta h, sonda ng."},
+   {h:"이", r:"i", m:"ㅇ + ㅣ", n:"Sadece 'i'."},
+   {h:"히", r:"hi", m:"ㅎ + ㅣ", n:"'Hi'."},
+   {h:"홍대", r:"hong-dae", m:"Hongdae", n:"ㅎ başta h, ㅇ sonda ng."}]},
+  {name:"ㅘ ㅝ ㅟ ㅢ", hw:"화장실", vid:{id:"s5aobqyEaMQ",t:3401,title:"Go! Billy Korean · birleşik ünlüler (56:41)"}, tip:"İki ünlü yapışınca hızlı söyle; ilki 'w' olur. ㅝ'da ㅓ'nun çıkıntısı var, ㅟ'de yok.", items:[
+   {h:"와", r:"wa", m:"ㅗ + ㅏ", n:"o + a hızlı = wa."},
+   {h:"워", r:"wo", m:"ㅜ + ㅓ", n:"Sağdaki çizgide sola çıkıntı var → ㅓ → wo."},
+   {h:"위", r:"wi", m:"ㅜ + ㅣ", n:"Sağdaki çizgi düz, çıkıntı yok → ㅣ → wi."},
+   {h:"의", r:"ui", m:"ㅡ + ㅣ", n:"'ı' + 'i' hızlı. Kelime içinde çoğu zaman sadece 'i' duyulur."},
+   {h:"화", r:"hwa", m:"ㅎ + ㅘ", n:"'Hva' gibi."},
+   {h:"원", r:"won", m:"Kore parası", n:"₩ = 원. Fiyatlarda göreceksin."},
+   {h:"화장실", r:"hwa-jang-sil", m:"tuvalet", n:"En işine yarayacak kelimelerden."}]},
+  {name:"Ses kayması", hw:"감사합니다", vid:{id:"s5aobqyEaMQ",t:3690,title:"Go! Billy Korean · ses değişim kuralları (1:01:30)"}, tip:"Hece ünsüzle bitiyor, sonraki ㅇ ile başlıyorsa ünsüz öne kayar. ㅂ'den sonra ㄴ gelirse ㅂ 'm' olur.", items:[
+   {h:"곳은", r:"go-seun", m:"yer (konu)", n:"ㅅ sonraki heceye kayar: got-eun değil go-seun."},
+   {h:"할인", r:"ha-rin", m:"indirim", n:"ㄹ öne kayınca 'r' gibi okunur."},
+   {h:"한국어", r:"han-gu-geo", m:"Korece", n:"ㄱ kayar: han-guk-eo değil han-gu-geo."},
+   {h:"맛있어요", r:"ma-si-sseo-yo", m:"lezzetli", n:"맛'ın ㅅ'si öne kayar, 있'in ㅆ'si de."},
+   {h:"감사합니다", r:"gam-sa-ham-ni-da", m:"teşekkürler", n:"합 + 니: ㅂ, ㄴ'den önce 'm' olur."},
+   {h:"사람이에요", r:"sa-ra-mi-e-yo", m:"...kişiyim", n:"람'ın ㅁ'si 이'ye kayar."}]}
+ ]},
+ {n:3, c:"--l3", name:"Metro", desc:"Tabelalar, çıkışlar ve popüler duraklar", rounds:[
+  {name:"Metroda", hw:"출구", vid:{id:"fzbmJZ21NOU",t:73,title:"PhatLife Project · Seul metrosu nasıl kullanılır (01:13)"}, tip:"Bu kelimeler her istasyonda sarı ve turuncu tabelalarda.", items:[
+   {h:"지하철", r:"ji-ha-cheol", m:"metro", n:"지하 = yeraltı, 철 = demir(yolu)."},
+   {h:"역", r:"yeok", m:"istasyon", n:"명동역 = Myeongdong istasyonu."},
+   {h:"출구", r:"chul-gu", m:"çıkış", n:"Tabelada numarayla: 3번 출구 = 3 numaralı çıkış."},
+   {h:"입구", r:"ip-gu", m:"giriş", n:"홍대입구 = Hongdae girişi."},
+   {h:"호선", r:"ho-seon", m:"hat", n:"3호선 = 3. hat."},
+   {h:"환승", r:"hwan-seung", m:"aktarma", n:"Hat değiştireceğin yer."}]},
+  {name:"Duraklar", hw:"홍대입구", tip:"Gideceğin durakların adlarını tabelada tanıyabilmek.", items:[
+   {h:"시청", r:"si-cheong", m:"City Hall (belediye)", n:"1. ve 2. hat. ㅊ = ch."},
+   {h:"명동", r:"myeong-dong", m:"Myeongdong", n:"ㅕ = yeo."},
+   {h:"홍대입구", r:"hong-dae-ip-gu", m:"Hongdae", n:"2. hat ve havalimanı treni."},
+   {h:"성수", r:"seong-su", m:"Seongsu", n:"Kafeler ve pop-up mağazalar."},
+   {h:"동대문", r:"dong-dae-mun", m:"Dongdaemun", n:"DDP ve gece pazarları."},
+   {h:"강남", r:"gang-nam", m:"Gangnam", n:"ㄱ başta 'g', sonda 'k' sesine yakın."}]}
+ ]},
+ {n:4, c:"--l4", name:"Market ve alışveriş", desc:"CU/GS25, Olive Young, Daiso: fiyat, kart, fiş", rounds:[
+  {name:"Markette", hw:"편의점", vid:{id:"J5yy6hFGDJY",t:0,title:"Real Korean with Morning · GS25'te ödeme diyaloğu"}, tip:"Kasa başında duyacağın ve göreceğin kelimeler.", items:[
+   {h:"편의점", r:"pyeo-ni-jeom", m:"market (CU, GS25)", n:"Yazılışı pyeon-ui-jeom; ㄴ kayar, 의 'i' olur."},
+   {h:"카드", r:"ka-deu", m:"kart", n:"ㅋ = sert k."},
+   {h:"현금", r:"hyeon-geum", m:"nakit", n:"ㅕ = yeo."},
+   {h:"얼마예요", r:"eol-ma-ye-yo", m:"ne kadar?", n:"Ürünü gösterip sor."},
+   {h:"봉투", r:"bong-tu", m:"poşet", n:"Poşet ücretli; 'bong-tu?' diye sorarlar."},
+   {h:"영수증", r:"yeong-su-jeung", m:"fiş", n:"Tax refund için sakla."}]},
+  {name:"Alışveriş", hw:"올리브영", tip:"Mağaza ve ürün adları.", items:[
+   {h:"올리브영", r:"ol-li-beu-yeong", m:"Olive Young", n:"Kozmetik zinciri."},
+   {h:"다이소", r:"da-i-so", m:"Daiso", n:"Ucuz her şey mağazası."},
+   {h:"화장품", r:"hwa-jang-pum", m:"kozmetik", n:"ㅍ = p."},
+   {h:"면세", r:"myeon-se", m:"vergisiz (tax free)", n:"Kapıda 'Tax Free' yazısının yanında görürsün."},
+   {h:"세일", r:"se-il", m:"indirim (sale)", n:"İngilizceden."},
+   {h:"할인", r:"ha-rin", m:"indirim", n:"ㄹ öne kayar."}]}
+ ]},
+ {n:5, c:"--l5", name:"Yemek", desc:"Menüde göreceğin yemekler ve sipariş", rounds:[
+  {name:"Menü", hw:"떡볶이", tip:"Ucuz ve klasik Kore yemekleri.", items:[
+   {h:"김밥", r:"gim-bap", m:"kimbap (pirinç rulo)", n:"Konuşmada 'gim-ppap' gibi duyulur."},
+   {h:"라면", r:"ra-myeon", m:"ramen", n:"Markette hazır pişirme makinesi var."},
+   {h:"떡볶이", r:"tteok-bo-kki", m:"acılı pirinç keki", n:"ㄸ ve ㄲ çift harf: sert, gergin ses.", vid:{id:"s5aobqyEaMQ",t:2672,title:"Go! Billy Korean · çift ünsüzler ㄲ ㄸ ㅃ ㅆ ㅉ (44:32)"}},
+   {h:"비빔밥", r:"bi-bim-bap", m:"karışık pilav", n:"ㅂ ㅁ ㅂ."},
+   {h:"치킨", r:"chi-kin", m:"kızarmış tavuk", n:"KFC'nin rakipleri."},
+   {h:"물", r:"mul", m:"su", n:"Restoranlarda çoğu zaman bedava."}]},
+  {name:"Sipariş", hw:"맛있어요", vid:{id:"ZBozSnrAKZA",t:0,title:"Korean with Ina · restoranda 10 temel cümle"}, tip:"Sipariş verirken ve yerken.", items:[
+   {h:"주세요", r:"ju-se-yo", m:"lütfen verin", n:"Ne istiyorsan + 주세요: 물 주세요."},
+   {h:"메뉴", r:"me-nyu", m:"menü", n:"ㅠ = yu."},
+   {h:"커피", r:"keo-pi", m:"kahve", n:"Korecede f yok, ㅍ (p) kullanılır."},
+   {h:"맥주", r:"maek-ju", m:"bira", n:"ㅐ = e."},
+   {h:"포장", r:"po-jang", m:"paket (götürmek)", n:"'Burada mı, paket mi?' sorusuna cevap."},
+   {h:"맛있어요", r:"ma-si-sseo-yo", m:"lezzetli", n:"Ses kayması: ma-si-sseo-yo."}]}
+ ]},
+ {n:1, c:"--l1", name:"Gezi ifadeleri", desc:"Selam, teşekkür, özür, kart olur mu?", rounds:[
+  {name:"Temel", hw:"감사합니다", vid:{id:"iOH4f7r2WUQ",t:0,title:"Korean with Ina · 16 temel Korece ifade"}, tip:"Her gün kullanacağın kelimeler.", items:[
+   {h:"안녕하세요", r:"an-nyeong-ha-se-yo", m:"merhaba", n:"Her yerde, herkese."},
+   {h:"감사합니다", r:"gam-sa-ham-ni-da", m:"teşekkürler", n:"ㅂ, ㄴ'den önce 'm' olur."},
+   {h:"죄송합니다", r:"joe-song-ham-ni-da", m:"özür dilerim", n:"ㅚ = oe, 'we' gibi duyulur."},
+   {h:"네", r:"ne", m:"evet", n:"'Ne' evet demek, karıştırma 😄"},
+   {h:"아니요", r:"a-ni-yo", m:"hayır", n:"Kibar hayır."}]},
+  {name:"Gezide", hw:"튀르키예", tip:"Kendini anlatmak ve ödeme yapmak.", items:[
+   {h:"튀르키예", r:"twi-reu-ki-ye", m:"Türkiye", n:"ㅟ = wi."},
+   {h:"카드 돼요?", r:"ka-deu dwae-yo", m:"kart olur mu?", n:"ㅙ = wae."},
+   {h:"괜찮아요", r:"gwaen-cha-na-yo", m:"sorun yok / iyiyim", n:"ㅎ sessizleşir: gwaen-cha-na-yo."},
+   {h:"이거 주세요", r:"i-geo ju-se-yo", m:"bunu istiyorum", n:"Gösterip söyle."},
+   {h:"어디예요?", r:"eo-di-ye-yo", m:"nerede?", n:"화장실 어디예요? = tuvalet nerede?"}]}
+ ]},
+ {n:9, c:"--l9", name:"Gerçek Seul", desc:"Gerçek fotoğraflarda oku: istasyon tabelaları, dükkânlar, yemekler", rounds:[
+  {name:"Tabelalar", hw:"홍대입구", tip:"Ders kitabı yazısı değil, gerçek tabelalar. Önce büyük yazıyı bul, sonra oku.", items:[
+   {h:"명동", r:"myeong-dong", m:"Myeongdong istasyonu", img:"myeongdong.jpg", q:"Direkteki büyük yazı nasıl okunur?", n:"424 = 4. hattın 24. durağı. Parantezdeki 정화예술대 bir üniversitenin adı; bazı duraklarda yan isim olarak yazılır."},
+   {h:"홍대입구", r:"hong-dae-ip-gu", m:"Hongdae istasyonu", img:"hongdae-sign.jpg", q:"Ortadaki büyük yazı nasıl okunur?", n:"Solda 가좌 (ga-jwa), sağda 서강대 (seo-gang-dae): önceki ve sonraki duraklar."},
+   {h:"출입구", r:"chu-rip-gu", m:"giriş-çıkış", img:"exit-pole.jpg", q:"Sarı 2'nin altındaki küçük sarı yazı?", n:"출 (çık) + 입 (gir) + 구 (ağız). ㄹ öne kayar: chul-ip-gu değil chu-rip-gu. Metro girişlerinde numarayla birlikte yazar."},
+   {h:"4호선", r:"sa-ho-seon", m:"4. hat", img:"exit-pole.jpg", q:"Alttaki mavi dairede 418'in altında ne yazıyor?", n:"Rakamlar Korecede okunur: 4 = 사 (sa). 4호선 = 4. hat, 418 = o hattın 18. durağı."},
+   {h:"김밥천국", r:"gim-bap-cheon-guk", m:"Gimbap Cheonguk ('kimbap cenneti')", img:"gimbap-cheonguk.jpg", q:"Turuncu tabeladaki büyük yazı?", n:"Kore'nin en yaygın ucuz yemek zinciri. 천국 = cennet. Yeşil panoda menü ve fiyatlar (₩) var."}]},
+  {name:"Ne bu?", hw:"떡볶이", tip:"Fotoğrafa bak, Korece adını seç. Seul'de bunları menüde göreceksin.", items:[
+   {h:"떡볶이", r:"tteok-bo-kki", m:"acılı pirinç keki", img:"tteokbokki.jpg", ask:"pick", q:"Bu yemeğin adı hangisi?", n:"Uzun beyaz pirinç keki, kırmızı acı sos ve balık keki (어묵)."},
+   {h:"김밥", r:"gim-bap", m:"kimbap", img:"gimbap.jpg", ask:"pick", q:"Bu yemeğin adı hangisi?", n:"Yanında kimchi ve sarı turşu (단무지, dan-mu-ji) gelir."},
+   {h:"편의점", r:"pyeo-ni-jeom", m:"market (GS25, CU)", img:"gs25.jpg", ask:"pick", q:"Bu tür dükkâna ne denir?", n:"Tabelada GS25 yazıyor; Korecede bu dükkânlara 편의점 denir."},
+   {h:"올리브영", r:"ol-li-beu-yeong", m:"Olive Young", img:"olive-young.jpg", ask:"pick", q:"Bu mağazanın Korece yazılışı hangisi?", n:"Tabelada Latin harfleri var; Korece tabelalarda 올리브영 yazar. Pasaportla anında vergi iadesi yapıyorlar."}]}
+ ]}
+];
+
+const CREDITS={"myeongdong.jpg": {"title": "명동역 1.jpg", "page": "https://commons.wikimedia.org/wiki/File:%EB%AA%85%EB%8F%99%EC%97%AD_1.jpg", "license": "CC BY-SA 4.0", "artist": "Me358"}, "hongdae-sign.jpg": {"title": "20260429 경의중앙선 홍대입구역 역명판.jpg", "page": "https://commons.wikimedia.org/wiki/File:20260429_%EA%B2%BD%EC%9D%98%EC%A4%91%EC%95%99%EC%84%A0_%ED%99%8D%EB%8C%80%EC%9E%85%EA%B5%AC%EC%97%AD_%EC%97%AD%EB%AA%85%ED%8C%90.jpg", "license": "CC0", "artist": "Striker9498"}, "exit-pole.jpg": {"title": "Sungshin Women's Univ. Station Exit 2 Pole Sign 1.jpg", "page": "https://commons.wikimedia.org/wiki/File:Sungshin_Women%27s_Univ._Station_Exit_2_Pole_Sign_1.jpg", "license": "CC0", "artist": "Udonhan1992"}, "gimbap-cheonguk.jpg": {"title": "Gimbabcheonguk-outside-seoul-2019-7-28.jpg", "page": "https://commons.wikimedia.org/wiki/File:Gimbabcheonguk-outside-seoul-2019-7-28.jpg", "license": "CC BY 4.0", "artist": "Nesnad"}, "tteokbokki.jpg": {"title": "2015년 10월 25일 과천시 굴다리시장 형태네집 떡볶이.jpg", "page": "https://commons.wikimedia.org/wiki/File:2015%EB%85%84_10%EC%9B%94_25%EC%9D%BC_%EA%B3%BC%EC%B2%9C%EC%8B%9C_%EA%B5%B4%EB%8B%A4%EB%A6%AC%EC%8B%9C%EC%9E%A5_%ED%98%95%ED%83%9C%EB%84%A4%EC%A7%91_%EB%96%A1%EB%B3%B6%EC%9D%B4.jpg", "license": "CC0", "artist": "최광모 (Choe Kwangmo)"}, "gs25.jpg": {"title": "GS25 Gangnam-metro branch 20181121 144100.jpg", "page": "https://commons.wikimedia.org/wiki/File:GS25_Gangnam-metro_branch_20181121_144100.jpg", "license": "CC BY-SA 4.0", "artist": "LERK"}, "gimbap.jpg": {"title": "Gimbabcheonguk-gimbap-seoul-2019-7-28.jpg", "page": "https://commons.wikimedia.org/wiki/File:Gimbabcheonguk-gimbap-seoul-2019-7-28.jpg", "license": "CC BY 4.0", "artist": "Nesnad"}, "olive-young.jpg": {"title": "Olive Young Myeongdong.jpg", "page": "https://commons.wikimedia.org/wiki/File:Olive_Young_Myeongdong.jpg", "license": "CC BY-SA 4.0", "artist": "Sgroey"}};
+
+/* ---------- storage (optional) ---------- */
+const KEY="hangul-seoul-v2";
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{done:{},miss:{}}}catch(e){return{done:{},miss:{}}}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let S=load(); S.done=S.done||{}; S.miss=S.miss||{};
+
+/* ---------- speech ---------- */
+let koVoice=null;
+const HAS_TTS="speechSynthesis" in window;
+function pickVoice(){try{const vs=speechSynthesis.getVoices();koVoice=vs.find(v=>/^ko/i.test(v.lang))||null}catch(e){}}
+if(HAS_TTS){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+function say(t,opt={}){
+  try{
+    if(!opt.keep)speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(String(t).replace(/[?]/g,""));
+    u.lang="ko-KR";if(koVoice)u.voice=koVoice;u.rate=opt.rate||.8;
+    if(opt.onend){u.onend=opt.onend;u.onerror=opt.onend}
+    speechSynthesis.speak(u);
+  }catch(e){opt.onend&&opt.onend()}
+}
+const SPK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+
+/* ---------- hangul math: syllable = 0xAC00 + (initial*21 + vowel)*28 + final ---------- */
+const CHO=[..."ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ"];
+const CHO_R=["g","kk","n","d","tt","r","m","b","pp","s","ss","","j","jj","ch","k","t","p","h"];
+const JUNG=[..."ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ"];
+const JUNG_R=["a","ae","ya","yae","eo","e","yeo","ye","o","wa","wae","oe","yo","u","wo","we","wi","yu","eu","ui","i"];
+const JONG=["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ","ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+const JONG_R=["","k","k","k","n","n","n","t","l","k","m","l","l","l","p","l","m","p","p","t","t","ng","t","t","k","t","p","t"];
+const isSyl=ch=>{const c=ch.charCodeAt(0);return c>=0xAC00&&c<=0xD7A3};
+function decomp(ch){const c=ch.charCodeAt(0)-0xAC00;return{l:Math.floor(c/588),v:Math.floor(c%588/28),t:c%28}}
+const compose=(l,v,t)=>String.fromCharCode(0xAC00+(l*21+v)*28+t);
+const sylRoman=ch=>{const d=decomp(ch);return CHO_R[d.l]+JUNG_R[d.v]+JONG_R[d.t]};
+const syllables=w=>[...w].filter(isSyl);
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const app=$("#app");
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rid=(li,ri)=>LINES[li].n+"-"+ri;
+const SWAPS=[["eo","u"],["eo","o"],["o","u"],["u","eo"],["wo","wi"],["wi","wo"],["eu","u"],["ng","n"],["h",""]];
+function fake(r,taken){for(const [a,b] of shuffle(SWAPS)){if(r.includes(a)){const f=r.replace(a,b);if(f&&!taken.has(f))return f}}return null}
+function options(item,pool){
+  const taken=new Set([item.r]);const out=[item.r];
+  const f=fake(item.r,taken);if(f){out.push(f);taken.add(f)}
+  for(const p of shuffle(pool)){if(out.length>=4)break;if(!taken.has(p.r)){out.push(p.r);taken.add(p.r)}}
+  return shuffle(out);
+}
+/* listening distractors: a look-alike made by swapping one vowel, then other words */
+const VSWAP={4:[8,13],8:[4,13],13:[4,18],18:[13],14:[16],16:[14],9:[14],0:[4]};
+function fakeHangul(w){
+  const s=[...w];const idx=shuffle(s.map((c,i)=>i).filter(i=>isSyl(s[i])));
+  for(const i of idx){const d=decomp(s[i]);const alt=VSWAP[d.v];if(alt){s[i]=compose(d.l,alt[Math.random()*alt.length|0],d.t);return s.join("")}
+    if(d.l===11||d.l===18){s[i]=compose(d.l===11?18:11,d.v,d.t);return s.join("")}}
+  return null;
+}
+function hOptions(item,pool){
+  const out=[item.h];const f=fakeHangul(item.h);if(f&&f!==item.h)out.push(f);
+  for(const p of shuffle(pool)){if(out.length>=4)break;if(!out.includes(p.h))out.push(p.h)}
+  return shuffle(out);
+}
+function setColor(c){document.documentElement.style.setProperty("--c",`var(${c})`)}
+const yg=w=>`https://youglish.com/pronounce/${encodeURIComponent(w.replace(/[?]/g,"").trim())}/korean`;
+const gt=w=>`https://translate.google.com/?sl=ko&tl=tr&text=${encodeURIComponent(w.replace(/[?]/g,"").trim())}&op=translate`;
+const EXT='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+const ytURL=(v,auto)=>`https://www.youtube-nocookie.com/embed/${v.id}?start=${v.t||0}&rel=0&playsinline=1${auto?"&autoplay=1":""}`;
+function videoBlock(v){
+  if(!v)return"";
+  return `<div class="vid"><button class="vbtn" data-vid="${esc(JSON.stringify(v))}">${PLAY}<span>Videolu ders<br><small>${esc(v.title)}</small></span></button><div class="vframe" hidden></div></div>`;
+}
+function bindVideo(root=app){
+  root.querySelectorAll(".vbtn").forEach(b=>b.onclick=()=>{
+    const v=JSON.parse(b.dataset.vid);const f=b.nextElementSibling;
+    window.speechSynthesis?.cancel?.();
+    f.innerHTML=`<iframe src="${ytURL(v,true)}" title="${esc(v.title)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+    f.hidden=false;b.hidden=true;
+  });
+}
+const PLAY='<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M10 8l6 4-6 4z" fill="var(--surface)"/></svg>';
+const figure=it=>it.img?`<figure class="ph"><img src="img/${it.img}" alt="${esc(it.m)}"></figure>`:"";
+function realLinks(w){
+  return `<div class="real"><a href="${yg(w)}" target="_blank" rel="noopener">${EXT}Gerçek videolarda duy (YouGlish)</a><a href="${gt(w)}" target="_blank" rel="noopener">${EXT}Google Çeviri</a></div>`;
+}
+/* sign styles: real Seoul lettering looks nothing like a textbook font */
+const SIGNS=[
+  {k:"plain",n:"Düz yazı"},
+  {k:"metro",n:"Metro tabelası"},
+  {k:"store",n:"Market tabelası"},
+  {k:"menu",n:"El yazısı menü"},
+  {k:"serif",n:"Tırnaklı yazı"},
+  {k:"poster",n:"Kalın afiş"}
+];
+function signHTML(w,style){
+  const cls=w.length>3?"long":"";
+  if(style.k==="plain")return `<div class="big ${cls}">${esc(w)}</div>`;
+  return `<div class="sign sign-${style.k}"><span class="big ${cls}">${esc(w)}</span></div>`;
+}
+function breakdown(w){
+  const ss=syllables(w);
+  return `<div class="tiles" aria-label="Hece hece">${ss.map((s,i)=>{const d=decomp(s);
+    const parts=[CHO[d.l],JUNG[d.v],JONG[d.t]].filter(Boolean);
+    const pr=[CHO_R[d.l]||"∅",JUNG_R[d.v],JONG_R[d.t]].filter(Boolean);
+    return `<button class="tile" data-i="${i}" data-s="${s}"><span class="ts">${s}</span><span class="tj">${parts.join(" + ")}</span><span class="tr">${pr.join(" + ")}</span></button>`}).join("")}</div>
+   <p class="tiny">Hecelere tek tek dokun. ∅ = sessiz ㅇ. Kelimenin içinde ses kayabilir, o yüzden kelimenin okunuşu farklı olabilir.</p>`;
+}
+function bindTiles(root=app){
+  root.querySelectorAll(".tile").forEach(t=>t.onclick=()=>{flash(t);say(t.dataset.s,{rate:.7})});
+}
+function flash(t){t.classList.add("on");setTimeout(()=>t.classList.remove("on"),700)}
+function playSlow(){
+  const tiles=[...app.querySelectorAll(".tile")];let i=0;
+  window.speechSynthesis?.cancel?.();
+  const next=()=>{if(i>=tiles.length)return;const t=tiles[i++];flash(t);say(t.dataset.s,{rate:.6,keep:true,onend:()=>setTimeout(next,150)})};
+  next();
+}
+
+/* ---------- home ---------- */
+function home(){
+  window.speechSynthesis?.cancel?.();document.onkeydown=null;
+  const missN=Object.values(S.miss).filter(v=>v>0).length;
+  const anyDone=Object.keys(S.done).length>0;
+  app.innerHTML=`
+  <header><div><h1><span>한글</span> Seul hattı</h1><p class="sub">Harfleri biliyorsun, şimdi Seul'de göreceğin yazıları okumayı çalış. Her hat bir konu, her durak bir tur. 9. hatta gerçek fotoğraflar var.</p></div></header>
+  <div class="tools">
+   <button class="tool" id="lab"><span class="ti">ㅎ+ㅘ=화</span><span><b>Hece atölyesi</b><br>Harfleri birleştirip hece kur, sesini dinle.</span></button>
+   <button class="tool" id="rev" ${anyDone?"":"disabled"}><span class="ti">↻</span><span><b>Karışık tekrar</b><br>${anyDone?`12 soru${missN?`, önce yanlışların (${missN})`:""}, tabela ve el yazısıyla.`:"Bir durak bitirince açılır."}</span></button>
+  </div>
+  ${LINES.map((L,li)=>`
+   <section class="line" style="--c:var(${L.c})">
+    <div class="line-head"><span class="badge" style="background:var(${L.c})">${L.n}</span><div><h2>${esc(L.name)}</h2><p>${esc(L.desc)}</p></div></div>
+    <div class="track">${L.rounds.map((R,ri)=>`
+      <button class="stop ${S.done[rid(li,ri)]?"done":""}" data-l="${li}" data-r="${ri}" aria-label="${esc(L.name)}: ${esc(R.name)}">
+        <span class="dot">${S.done[rid(li,ri)]?"✓":ri+1}</span><span class="nm">${esc(R.name)}</span><span class="hw">${esc(R.hw)}</span>
+      </button>`).join("")}</div>
+   </section>`).join("")}
+  ${HAS_TTS?"":`<p class="warn">Bu tarayıcı sesli okumayı desteklemiyor. Dinleme soruları atlanacak; YouGlish linkleri çalışır.</p>`}
+  <details class="credits"><summary>Fotoğraf ve video kaynakları</summary>
+   <p>Fotoğraflar Wikimedia Commons'tan, lisanslarına uygun kullanılmıştır:</p>
+   <ul>${Object.entries(CREDITS).map(([f,c])=>`<li><a href="${c.page}" target="_blank" rel="noopener">${esc(c.title)}</a> · ${esc(c.artist)} · ${esc(c.license)}</li>`).join("")}</ul>
+   <p>Videolar YouTube'dan gömülüdür ve kanallarına aittir: Learn Korean with GO! Billy Korean, PhatLife Project, Real Korean with Morning, Korean with Ina.</p>
+  </details>
+  <p class="foot">Sayfadaki sesler cihazının Korece sesiyle okunur. Gerçek insan sesi için kelimelerdeki YouGlish linki gerçek videolarda o kelimenin geçtiği anı açar. İlerleme sadece bu tarayıcıda saklanır.</p>`;
+  app.querySelectorAll(".stop").forEach(b=>b.onclick=()=>startRound(+b.dataset.l,+b.dataset.r));
+  $("#rev").onclick=startReview;$("#lab").onclick=lab;
+  window.scrollTo(0,0);
+}
+
+/* ---------- lesson engine ---------- */
+let L=null;
+function buildQueue(items){
+  const q=items.map(it=>({...it,mode:it.ask==="pick"?"pick":"read"}));
+  if(HAS_TTS)shuffle(items.filter(it=>!it.img)).slice(0,Math.ceil(items.length/2)).forEach(it=>q.push({...it,mode:"listen"}));
+  return shuffle(q);
+}
+function startRound(li,ri){
+  const Ln=LINES[li],R=Ln.rounds[ri];setColor(Ln.c);
+  const q=buildQueue(R.items);
+  L={li,ri,title:`${Ln.n}호선 · ${R.name}`,tip:R.tip,items:R.items,pool:R.items.length>=4?R.items:Ln.rounds.flatMap(r=>r.items),
+     stage:"intro",learnI:0,queue:q,total:q.length,right:0,wrong:0,hw:R.hw,review:false,vid:R.vid};
+  render();
+}
+function startReview(){
+  const all=[];LINES.forEach((Ln,li)=>Ln.rounds.forEach((R,ri)=>{if(S.done[rid(li,ri)])R.items.forEach(it=>all.push({...it,c:Ln.c}))}));
+  const uniq=[...new Map(all.map(i=>[i.h+(i.img||""),i])).values()];
+  const sorted=shuffle(uniq).sort((a,b)=>(S.miss[b.h]||0)-(S.miss[a.h]||0));
+  const q=shuffle(sorted.slice(0,12).map((it,i)=>({...it,mode:it.ask==="pick"?"pick":(HAS_TTS&&!it.img&&i%3===2?"listen":"read")})));
+  setColor("--l2");
+  L={title:"Karışık tekrar",items:q,pool:uniq,stage:"quiz",queue:q.slice(),total:q.length,right:0,wrong:0,review:true};
+  render();
+}
+function topbar(done,total,title){
+  return `<div class="bar"><button class="x" id="quit" aria-label="Haritaya dön">×</button><div class="prog"><i style="width:${Math.min(100,Math.round(done/total*100))}%"></i></div><span class="lbl">${esc(title)}</span></div>`;
+}
+function render(){({intro,learn,quiz,end})[L.stage]()}
+function bindQuit(){$("#quit").onclick=home}
+function intro(){
+  app.innerHTML=`${topbar(0,1,L.title)}
+   <div class="card"><span class="lbl">Yeni durak</span><div class="big long">${esc(L.hw)}</div>
+   <p class="note">${esc(L.tip)}</p><p class="note">Önce ${L.items.length} kelimeyle tanışacaksın: hece hece dinleyip gerçek videolarda duyabilirsin. Sonra okuma ve dinleme soruları gelecek. Yanlış yaptıkların tekrar karşına çıkar.</p>
+   ${videoBlock(L.vid)}
+   <div class="row"><button class="btn" id="go">Başla</button><button class="btn ghost" id="skip">Doğrudan teste geç</button></div></div>`;
+  bindQuit();bindVideo();
+  $("#go").onclick=()=>{L.stage="learn";render()};
+  $("#skip").onclick=()=>{L.stage="quiz";render()};
+  $("#go").focus();
+}
+function learn(){
+  const it=L.items[L.learnI];
+  app.innerHTML=`${topbar(L.learnI,L.items.length*2,L.title)}
+   <div class="card"><span class="lbl">Tanış · ${L.learnI+1}/${L.items.length}</span>
+    ${figure(it)}
+    <div class="big ${it.h.length>3?"long":""}">${esc(it.h)}</div>
+    <div class="row"><button class="speak" id="sp">${SPK}Dinle</button><button class="speak" id="slow">${SPK}Hece hece</button></div>
+    <div class="roman">${esc(it.r)}</div><div class="mean">${esc(it.m)}</div><p class="note">${esc(it.n)}</p>
+    ${breakdown(it.h)}
+    ${videoBlock(it.vid||L.vid)}
+    ${realLinks(it.h)}
+    <div class="row"><button class="btn ghost" id="back" ${L.learnI?"":"disabled"}>Geri</button><button class="btn" id="next">${L.learnI<L.items.length-1?"Sonraki":"Teste geç"}</button></div></div>`;
+  bindQuit();bindTiles();bindVideo();
+  $("#sp").onclick=()=>say(it.h);
+  $("#slow").onclick=playSlow;
+  $("#back").onclick=()=>{L.learnI--;render()};
+  $("#next").onclick=()=>{if(L.learnI<L.items.length-1)L.learnI++;else L.stage="quiz";render()};
+  say(it.h);$("#next").focus();
+}
+function quiz(){
+  if(!L.queue.length){L.stage="end";return render()}
+  const it=L.queue[0];if(it.c)setColor(it.c);
+  const listen=it.mode==="listen", pickM=it.mode==="pick", hangulOpts=listen||pickM;
+  const pool=pickM?L.pool.filter(p=>p.ask==="pick").concat(L.pool):L.pool;
+  const opts=hangulOpts?hOptions(it,pool):options(it,L.pool);
+  const style=(hangulOpts||it.img)?null:(L.review||Math.random()<.5?SIGNS[1+(Math.random()*(SIGNS.length-1)|0)]:SIGNS[0]);
+  const answered=L.total-L.queue.length;
+  app.innerHTML=`${topbar(L.review?answered:L.items.length+answered,L.review?L.total:L.items.length+L.total,L.title)}
+   <div class="card" id="card">
+    ${listen?`<span class="lbl">Dinle · hangisi?</span><button class="bigspeak" id="ls" aria-label="Tekrar dinle">${SPK}</button><p class="note">Duyduğun kelimenin yazılışını seç.</p>`
+      :it.img?`<span class="lbl">Gerçek fotoğraf</span>${figure(it)}<p class="q">${esc(it.q)}</p>`
+      :`<span class="lbl">Nasıl okunur?${style.k!=="plain"?" · "+style.n:""}</span>${signHTML(it.h,style)}`}
+    <div class="opts ${hangulOpts?"hangul":""}">${opts.map((o,i)=>`<button class="opt" data-v="${esc(o)}"><span class="k">${i+1}</span>${esc(o)}</button>`).join("")}</div>
+    <p class="fb" id="fb" aria-live="polite"></p><div id="after"></div></div>`;
+  bindQuit();
+  if(listen){say(it.h);$("#ls").onclick=()=>say(it.h)}
+  const answer=hangulOpts?it.h:it.r;
+  const btns=[...app.querySelectorAll(".opt")];
+  const pick=b=>{
+    if(b.disabled)return;btns.forEach(x=>x.disabled=true);
+    const ok=b.dataset.v===answer;
+    btns.find(x=>x.dataset.v===answer).classList.add("ok");
+    say(it.h);
+    if(ok){
+      L.right++;b.classList.add("ok");
+      $("#fb").className="fb ok";$("#fb").textContent=`Doğru! ${hangulOpts?it.h+" · "+it.r:it.m}`;
+      if(S.miss[it.h])S.miss[it.h]=Math.max(0,S.miss[it.h]-1);save();
+      L.queue.shift();
+      setTimeout(()=>{if(L&&L.stage==="quiz"&&L.queue[0]!==it)quiz()},1200);
+    }else{
+      L.wrong++;b.classList.add("bad");$("#card").classList.add("shake");
+      S.miss[it.h]=(S.miss[it.h]||0)+1;save();
+      $("#fb").className="fb bad";$("#fb").textContent=`Doğrusu: ${it.h} · ${it.r} · ${it.m}`;
+      $("#after").innerHTML=`<p class="note">${esc(it.n)}</p>${breakdown(it.h)}<div class="row" style="margin-top:12px"><button class="speak" id="slow">${SPK}Hece hece</button><a class="speak" href="${yg(it.h)}" target="_blank" rel="noopener">${EXT}Videoda duy</a><button class="btn" id="cont">Devam</button></div>${videoBlock(it.vid||L.vid)}`;
+      bindTiles($("#after"));bindVideo($("#after"));$("#slow").onclick=playSlow;
+      const again=L.queue.shift();L.queue.splice(Math.min(2,L.queue.length),0,again);L.total++;
+      $("#cont").onclick=quiz;$("#cont").focus();
+    }
+  };
+  btns.forEach(b=>b.onclick=()=>pick(b));
+  document.onkeydown=e=>{if(L&&L.stage==="quiz"&&/^[1-4]$/.test(e.key)&&btns[e.key-1])pick(btns[e.key-1])};
+}
+function end(){
+  document.onkeydown=null;
+  if(!L.review){S.done[rid(L.li,L.ri)]=true;save()}
+  const acc=Math.round(L.right/Math.max(1,L.right+L.wrong)*100);
+  const Ln=L.review?null:LINES[L.li];const nextR=Ln&&Ln.rounds[L.ri+1];
+  const nextL=Ln&&!nextR&&LINES[L.li+1];
+  app.innerHTML=`${topbar(1,1,L.title)}
+   <div class="card"><span class="lbl">${L.review?"Tekrar bitti":"Durak tamam"}</span>
+    ${L.review?"":`${signHTML(L.hw,SIGNS[1])}<p class="note">Bu kelimeyi artık tabelada da okuyabilirsin.</p><div class="row"><button class="speak" id="sp">${SPK}Dinle</button></div>${realLinks(L.hw)}`}
+    <div class="mean">${L.right} doğru, ${L.wrong} yanlış · %${acc}</div>
+    <p class="note">${L.wrong?"Yanlış yaptıkların karışık tekrarda önce gelecek.":"Hiç yanlış yok, harika."}</p>
+    <div class="row">
+     ${nextR?`<button class="btn" id="nx">Sonraki durak: ${esc(nextR.name)}</button>`:""}
+     ${nextL?`<button class="btn" id="nl">Sonraki hat: ${esc(nextL.name)}</button>`:""}
+     <button class="btn ghost" id="map">Haritaya dön</button></div></div>`;
+  bindQuit();
+  if(!L.review){$("#sp").onclick=()=>say(L.hw);say(L.hw)}
+  if(nextR)$("#nx").onclick=()=>startRound(L.li,L.ri+1);
+  if(nextL)$("#nl").onclick=()=>startRound(L.li+1,0);
+  $("#map").onclick=home;
+}
+
+/* ---------- syllable lab ---------- */
+const LAB_FINALS=[0,1,4,8,16,17,19,21];
+let LB={l:18,v:9,t:0,task:null,score:0};
+function labTargets(){const s=new Set();LINES.forEach(Ln=>Ln.rounds.forEach(R=>R.items.forEach(it=>syllables(it.h).forEach(c=>{const d=decomp(c);if(LAB_FINALS.includes(d.t))s.add(c)}))));return[...s]}
+function newTask(){const ts=labTargets();LB.task=ts[Math.random()*ts.length|0];LB.l=11;LB.v=0;LB.t=0;}
+function lab(){
+  setColor("--l5");document.onkeydown=null;
+  const cur=compose(LB.l,LB.v,LB.t);
+  const chips=(arr,rom,sel,key,list)=>list.map(i=>`<button class="chip ${i===sel?"sel":""}" data-k="${key}" data-i="${i}"><b>${arr[i]||"yok"}</b><small>${key==="l"&&i===11?"sessiz":(rom[i]||"–")}</small></button>`).join("");
+  const done=LB.task&&cur===LB.task;
+  app.innerHTML=`${topbar(LB.score%5,5,"Hece atölyesi")}
+   <div class="card">
+    <div class="row"><button class="btn ${LB.task?"ghost":""}" id="free">Serbest</button><button class="btn ${LB.task?"":"ghost"}" id="task">Görev: duyduğunu kur</button></div>
+    ${LB.task?`<p class="note">${done?"Doğru! ":""}Duyduğun heceyi aşağıdaki harflerle kur. <button class="speak" id="tp">${SPK}Tekrar dinle</button> Kurulan: ${LB.score}</p>`:`<p class="note">İlk ünsüz + ünlü + (isteğe bağlı) son ünsüz seç. Her değişiklikte hece okunur.</p>`}
+    <div class="big ${done?"okc":""}">${cur}</div>
+    <div class="roman">${esc(sylRoman(cur))}</div>
+    <div class="tj">${[CHO[LB.l],JUNG[LB.v],JONG[LB.t]].filter(Boolean).join(" + ")}</div>
+    <div class="grp"><span class="lbl">1 · İlk ünsüz</span><div class="chips">${chips(CHO,CHO_R,LB.l,"l",CHO.map((_,i)=>i))}</div></div>
+    <div class="grp"><span class="lbl">2 · Ünlü</span><div class="chips">${chips(JUNG,JUNG_R,LB.v,"v",JUNG.map((_,i)=>i))}</div></div>
+    <div class="grp"><span class="lbl">3 · Son ünsüz (받침)</span><div class="chips">${chips(JONG,JONG_R,LB.t,"t",LAB_FINALS)}</div></div>
+    ${done?`<button class="btn" id="nt">Sıradaki hece</button>`:LB.task?`<button class="btn ghost" id="show">Göster</button>`:""}
+   </div>`;
+  bindQuit();
+  app.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{LB[c.dataset.k]=+c.dataset.i;const s=compose(LB.l,LB.v,LB.t);
+    if(LB.task&&s===LB.task)LB.score++;lab();say(s,{rate:.7})});
+  $("#free").onclick=()=>{LB.task=null;lab()};
+  $("#task").onclick=()=>{newTask();lab();say(LB.task,{rate:.7})};
+  if($("#tp"))$("#tp").onclick=()=>say(LB.task,{rate:.7});
+  if($("#nt"))$("#nt").onclick=()=>{newTask();lab();say(LB.task,{rate:.7})};
+  if($("#show"))$("#show").onclick=()=>{const d=decomp(LB.task);LB.l=d.l;LB.v=d.v;LB.t=d.t;lab();say(LB.task,{rate:.7})};
+}
+home();
+</script>
+
+</body>
+</html>
