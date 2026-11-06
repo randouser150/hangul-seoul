@@ -1,6 +1,6 @@
 # 한글 Seul hattı
 
-Seul gezisi için Hangıl okuma pratiği: metro, market, yemek ve gezi kelimeleri; hece hece dinleme, dinleme soruları, gerçek fotoğraflar ve videolu dersler.
+Seul gezisi için Hangıl okuma pratiği: metro, market, yemek, sayılar, cümle kalıpları ve yön kelimeleri. Ders kartları, aralıklı tekrar, kelime kurma, yazarak cevaplama, fiyat oyunu, cümle kurma, diyalog sahneleri, tabela avı ve metro yarışı; 25 gerçek fotoğraf ve videolu dersler.
 
 **Sayfa:** https://randouser150.github.io/hangul-seoul/
 
