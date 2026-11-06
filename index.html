@@ -183,6 +183,84 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--l4);outline-offset:
 @keyframes roll{to{transform:translateX(6px)}}
 @media (prefers-reduced-motion:reduce){.rail .train{animation:none}}
 @media (max-width:520px){.scenes{grid-template-columns:1fr}.street{grid-template-columns:repeat(2,1fr)}.stats b{font-size:1.2rem}}
+/* ---------- visual layer ---------- */
+:root{--car:#f7f8fa;--carline:#2b3137;--glass:#9cc6dd;--shadow:0 1px 2px rgba(23,32,42,.06),0 8px 24px -12px rgba(23,32,42,.18)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--car:#dfe5ea;--carline:#0e1318;--glass:#5d8ea8;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -12px rgba(0,0,0,.6)}}
+:root[data-theme="dark"]{--car:#dfe5ea;--carline:#0e1318;--glass:#5d8ea8;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -12px rgba(0,0,0,.6)}
+
+/* hero */
+.herobox{position:relative;border-radius:20px;overflow:hidden;background:linear-gradient(180deg,color-mix(in srgb,var(--l4) 18%,var(--surface)) 0%,var(--surface) 70%);border:1px solid var(--line);box-shadow:var(--shadow);min-height:200px;display:flex;flex-direction:column;justify-content:flex-start}
+.herobox .sky{position:absolute;inset:auto 0 0 0;width:100%;height:150px}
+.herobox .city{fill:color-mix(in srgb,var(--fg) 9%,transparent)}
+.herobox .hill{fill:color-mix(in srgb,var(--l2) 22%,transparent)}
+.herobox .tower rect{fill:color-mix(in srgb,var(--fg) 30%,transparent)}
+.herobox .rail{fill:none;stroke:var(--fg);stroke-width:3;opacity:.55}
+.herobox .sleepers{fill:none;stroke:var(--fg);stroke-width:9;stroke-dasharray:1.5 8;opacity:.25}
+.herotext{position:relative;padding:20px 20px 0;max-width:42ch}
+.herotext h1{font-size:clamp(1.6rem,6vw,2.2rem);letter-spacing:-.02em}
+.herotext .sub{margin-top:6px}
+.sound{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-size:1.1rem;display:grid;place-items:center;right:max(12px,env(safe-area-inset-right,0px))}
+
+/* cards, tools, stops */
+.card,.line,.tool,.stats div,.review{box-shadow:var(--shadow)}
+.card{animation:cardin .38s cubic-bezier(.2,.8,.2,1) both}
+@keyframes cardin{from{opacity:0;transform:translateY(10px) scale(.985)}}
+.tool{transition:transform .18s,box-shadow .18s,border-color .18s}
+.tool:hover:not(:disabled){transform:translateY(-2px)}
+.tool .ti{transition:transform .25s}
+.tool:hover:not(:disabled) .ti{transform:scale(1.12) rotate(-4deg)}
+.line{animation:cardin .4s both}
+.line:nth-of-type(2){animation-delay:.04s}.line:nth-of-type(3){animation-delay:.08s}.line:nth-of-type(4){animation-delay:.12s}.line:nth-of-type(5){animation-delay:.16s}
+.stop .dot{transition:transform .2s}
+.stop:hover .dot{transform:scale(1.12)}
+.stop.next .dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 45%,transparent)}50%{box-shadow:0 0 0 8px transparent}}
+.stop .mini{position:absolute;top:-14px;left:50%;width:58px;transform:translateX(-50%);z-index:1;animation:idle 1.4s ease-in-out infinite;pointer-events:none}
+.stop .mini svg{width:58px;height:20px;display:block}
+.track{padding-top:22px}
+.tools #race{grid-column:1/-1}
+@keyframes idle{50%{transform:translate(-50%,-2px)}}
+.stats b{display:inline-block;animation:pop .5s both .1s}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+.opt,.piece,.chip,.btn,.speak{transition:transform .12s,background .15s,border-color .15s}
+.opt:active:not(:disabled),.piece:active:not(:disabled),.btn:active:not(:disabled){transform:scale(.97)}
+.opt.ok{animation:okpop .35s}
+@keyframes okpop{50%{transform:scale(1.04)}}
+
+/* progress as a metro line */
+.bar .prog{display:none}
+.mprog{position:relative;flex:1;height:30px;margin:0 30px 0 28px}
+.mtrack{position:absolute;left:0;right:0;top:20px;height:6px;border-radius:3px;background:var(--line)}
+.mfill{position:absolute;left:0;top:20px;height:6px;border-radius:3px;background:var(--c);transition:width .7s cubic-bezier(.3,.7,.2,1)}
+.mtrain{position:absolute;top:0;transform:translateX(-50%);width:56px;transition:left .7s cubic-bezier(.3,.7,.2,1)}
+.mtrain svg{width:56px;height:19px;display:block}
+.mtrain::after{content:"";position:absolute;left:4px;right:4px;bottom:-4px;height:3px;border-radius:2px;background:color-mix(in srgb,var(--fg) 15%,transparent)}
+
+/* round end: the train pulls in, the station sign appears */
+.arrival{position:relative;width:100%;height:150px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center}
+.arrival .atrack{position:absolute;left:0;right:0;bottom:12px;height:5px;background:var(--fg);opacity:.35;border-radius:3px}
+.arrival .atrain{position:absolute;bottom:16px;left:50%;width:220px;transform:translateX(-50%);animation:pullin 1.3s cubic-bezier(.15,.75,.25,1) both}
+.arrival .atrain svg{width:220px;height:73px;display:block}
+@keyframes pullin{from{transform:translateX(calc(-50% - 120vw))}}
+.arrival .asign{position:absolute;top:0;left:50%;transform:translateX(-50%);animation:signin .5s 1.15s both}
+.arrival .asign .sign{padding:6px 18px}
+.arrival .asign .big{font-size:clamp(1.8rem,8vw,2.6rem)}
+@keyframes signin{from{opacity:0;transform:translate(-50%,-14px)}}
+
+/* confetti */
+.confetti{position:fixed;z-index:50;font-family:var(--hangul);font-weight:700;font-size:1.1rem;pointer-events:none;animation:fly .95s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+
+/* race: train jumps to the next station on a correct answer */
+.rail{position:relative}
+.rail .train{font-size:0;width:64px}
+.rail .train svg{width:64px;height:21px;display:block}
+.rail.go .train{transform:translateX(90px);opacity:0;transition:transform .25s ease-in,opacity .25s}
+
+@media (prefers-reduced-motion:reduce){
+ .card,.line,.stats b,.opt.ok,.stop.next .dot,.stop .mini,.arrival .atrain,.arrival .asign{animation:none}
+ .mtrain,.mfill{transition:none}
+}
 
 .ph{margin:0;width:100%;border-radius:12px;overflow:hidden;background:var(--line)}
 .ph img{display:block;width:100%;max-height:52vh;object-fit:contain;background:#000}
@@ -451,6 +529,101 @@ function load(){try{return JSON.parse(localStorage.getItem(KEY))||{done:{},miss:
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 let S=load(); S.done=S.done||{}; S.miss=S.miss||{};
 
+/* ---------- visuals: train, hero, arrival, celebration, sound ---------- */
+const REDUCED=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* side view of a Seoul subway car; stripe takes the current line colour (--c) */
+const TRAIN=`<svg class="trainsvg" viewBox="0 0 132 44" aria-hidden="true">
+ <rect x="2" y="3" width="120" height="31" rx="9" fill="var(--car)" stroke="var(--carline)" stroke-width="2"/>
+ <path d="M110 3h3a9 9 0 0 1 9 9v13h-12z" fill="var(--carline)"/>
+ <rect x="2" y="24" width="120" height="5" fill="var(--c,#00a84d)"/>
+ <g fill="var(--glass)"><rect x="10" y="9" width="15" height="10" rx="2"/><rect x="31" y="9" width="15" height="10" rx="2"/><rect x="62" y="9" width="15" height="10" rx="2"/><rect x="83" y="9" width="15" height="10" rx="2"/></g>
+ <path d="M52 6v24M57 6v24" stroke="var(--carline)" stroke-width="1.5" opacity=".5"/>
+ <g fill="var(--carline)"><circle cx="18" cy="38" r="4.5"/><circle cx="34" cy="38" r="4.5"/><circle cx="90" cy="38" r="4.5"/><circle cx="106" cy="38" r="4.5"/></g>
+ <circle cx="118" cy="30" r="1.8" fill="#ffd400"/>
+</svg>`;
+
+/* home hero: Seoul skyline, Namsan tower and a train looping along the track */
+function heroHTML(){
+  const stops=[["--l1",60],["--l2",150],["--l3",240],["--l4",330],["--l5",420],["--l6",510]];
+  return `<section class="herobox">
+   <svg class="sky" viewBox="0 0 600 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <path class="hill" d="M330 150 C 360 92 430 78 470 96 S 560 130 600 120 V150Z"/>
+    <g class="tower"><rect x="438" y="40" width="4" height="56"/><rect x="431" y="52" width="18" height="8" rx="3"/><rect x="439" y="22" width="2" height="18"/></g>
+    <path class="city" d="M0 150V112h18v-14h14v20h16V92h20v26h12v-34h22v40h14v-18h16v22h18V96h14v26h20v-30h10v36h26V108h18v16h22v-28h16v34h14v-22h20v28H330 V150Z"/>
+    <path id="trk" class="rail" d="M-20 136 C 120 136 160 122 300 122 S 480 136 620 136"/>
+    <path class="sleepers" d="M-20 136 C 120 136 160 122 300 122 S 480 136 620 136"/>
+    ${stops.map(([c,x])=>`<circle cx="${x}" cy="${x<300?136-(x/300)*14:122+((x-300)/300)*14}" r="5" fill="var(${c})" stroke="var(--surface)" stroke-width="2"/>`).join("")}
+    <g class="herotrain">${TRAIN.replace('class="trainsvg"','x="-33" y="-20" width="66" height="22"')}
+     ${REDUCED?"":`<animateMotion dur="16s" repeatCount="indefinite" rotate="auto"><mpath href="#trk"/></animateMotion>`}</g>
+   </svg>
+   <div class="herotext">
+    <h1><span>한글</span> Seul hattı</h1>
+    <p class="sub">Harfleri biliyorsun, şimdi Seul'de göreceğin yazıları okumayı çalış. Her hat bir konu, her durak bir tur.</p>
+   </div>
+   <button class="sound" id="snd" aria-label="Sesi aç/kapat" title="Efekt sesleri">${S.mute?"🔇":"🔊"}</button>
+  </section>`;
+}
+
+/* tiny synth: no audio files needed */
+let AC=null;
+function tone(f,t0,d,type="sine",vol=.09){
+  if(S.mute)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+  const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;
+  const t=AC.currentTime+t0;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g).connect(AC.destination);o.start(t);o.stop(t+d+.05)}catch(e){}
+}
+const SFX={
+  ok:()=>{tone(784,0,.18);tone(1175,.09,.28)},
+  bad:()=>{tone(196,0,.22,"triangle",.08);tone(164,.1,.26,"triangle",.06)},
+  arrive:()=>{[659,784,988,1319].forEach((f,i)=>tone(f,i*.16,.5,"sine",.07))},
+  tap:()=>tone(1400,0,.05,"square",.02)
+};
+
+/* hangul confetti from an element */
+function burst(el,n=16){
+  if(REDUCED||!el)return;
+  const r=el.getBoundingClientRect();const chars="가나다라마바사아자차카타파하좋아요!★";
+  for(let i=0;i<n;i++){
+    const s=document.createElement("span");s.className="confetti";s.textContent=chars[Math.random()*chars.length|0];
+    const a=Math.random()*Math.PI*2,d=60+Math.random()*90;
+    s.style.left=(r.left+r.width/2)+"px";s.style.top=(r.top+r.height/2)+"px";
+    s.style.setProperty("--dx",Math.cos(a)*d+"px");s.style.setProperty("--dy",(Math.sin(a)*d-40)+"px");
+    s.style.setProperty("--rot",(Math.random()*120-60)+"deg");s.style.color=`var(${["--l1","--l2","--l3","--l4","--l5","--l8"][i%6]})`;
+    document.body.appendChild(s);setTimeout(()=>s.remove(),1000);
+  }
+}
+
+/* progress train: slide from the previous position to the new one */
+let TB={title:"",p:0};
+function metroBar(done,total,title){
+  const p=Math.min(100,Math.round(done/Math.max(1,total)*100));
+  const from=TB.title===title?TB.p:0;TB={title,p};
+  return `<div class="mprog"><div class="mtrack"></div><div class="mfill" data-from="${from}" data-to="${p}"></div><div class="mtrain" data-from="${from}" data-to="${p}">${TRAIN}</div></div>`;
+}
+
+/* one observer wires everything that the renderers produce */
+new MutationObserver(muts=>{
+  for(const m of muts){
+    if(m.type==="attributes"){
+      const el=m.target;if(el.id!=="fb")continue;
+      if(el.classList.contains("ok")&&!el.dataset.fx){el.dataset.fx=1;SFX.ok();burst(el,12)}
+      else if(el.classList.contains("bad")&&!el.dataset.fx){el.dataset.fx=1;SFX.bad()}
+      continue;
+    }
+    m.addedNodes.forEach(n=>{
+      if(n.nodeType!==1)return;
+      n.querySelectorAll?.("[data-to]").forEach(el=>{
+        const key=el.classList.contains("mtrain")?"left":"width";
+        el.style[key]=el.dataset.from+"%";
+        requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style[key]=el.dataset.to+"%"}));
+      });
+      if(n.querySelector?.(".arrival")){SFX.arrive();setTimeout(()=>burst(document.querySelector(".asign"),24),1300)}
+      const snd=n.querySelector?.("#snd");if(snd)snd.onclick=()=>{S.mute=!S.mute;save();snd.textContent=S.mute?"🔇":"🔊";if(!S.mute)SFX.ok()};
+    });
+  }
+}).observe(document.getElementById("app"),{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
+document.addEventListener("pointerdown",e=>{if(e.target.closest(".opt,.piece,.chip,.tile,.ex,.ssign,.stop,.tool"))SFX.tap()},{passive:true});
+
 /* ---------- speech ---------- */
 let koVoice=null;
 const HAS_TTS="speechSynthesis" in window;
@@ -588,7 +761,7 @@ function home(){
   window.speechSynthesis?.cancel?.();document.onkeydown=null;
   const due=dueItems().length, st=streak(), seen=Object.keys(S.srs).length;
   app.innerHTML=`
-  <header><div><h1><span>한글</span> Seul hattı</h1><p class="sub">Harfleri biliyorsun, şimdi Seul'de göreceğin yazıları okumayı çalış. Her hat bir konu, her durak bir tur. Durakları bitirdikçe kelimeler tekrar listene girer. 9. hatta gerçek fotoğraflar, turlarda videolu dersler var.</p></div></header>
+  ${heroHTML()}
   <div class="stats"><div><b>${st}</b><span>gün üst üste</span></div><div><b>${seen}</b><span>görülen kelime</span></div><div><b>${learnedCount()}</b><span>oturmuş kelime</span></div></div>
   <div class="tools">
    <button class="tool hero" id="srs" ${seen?"":"disabled"}><span class="ti">↻ ${due}</span><span><b>Bugünün tekrarı</b><br>${seen?(due?`${Math.min(due,15)} kelime tekrar zamanında. Unutmaya başladıkların önce gelir.`:"Şu an tekrar zamanı gelen yok. Yeni durak aç ya da karışık çalış."):"Bir durak bitirince açılır."}</span></button>
@@ -603,10 +776,10 @@ function home(){
   ${LINES.map((L,li)=>`
    <section class="line" style="--c:var(${L.c})">
     <div class="line-head"><span class="badge" style="background:var(${L.c})">${L.n}</span><div><h2>${esc(L.name)}</h2><p>${esc(L.desc)}</p></div></div>
-    <div class="track">${L.rounds.map((R,ri)=>`
-      <button class="stop ${S.done[rid(li,ri)]?"done":""}" data-l="${li}" data-r="${ri}" aria-label="${esc(L.name)}: ${esc(R.name)}">
-        <span class="dot">${S.done[rid(li,ri)]?"✓":ri+1}</span><span class="nm">${esc(R.name)}</span><span class="hw">${esc(R.hw)}</span>
-      </button>`).join("")}</div>
+    <div class="track">${L.rounds.map((R,ri)=>{const nx=!S.done[rid(li,ri)]&&L.rounds.findIndex((_,k)=>!S.done[rid(li,k)])===ri;return `
+      <button class="stop ${S.done[rid(li,ri)]?"done":""} ${nx?"next":""}" data-l="${li}" data-r="${ri}" aria-label="${esc(L.name)}: ${esc(R.name)}${nx?" (sıradaki durak)":""}">
+        ${nx?`<span class="mini">${TRAIN}</span>`:""}<span class="dot">${S.done[rid(li,ri)]?"✓":ri+1}</span><span class="nm">${esc(R.name)}</span><span class="hw">${esc(R.hw)}</span>
+      </button>`}).join("")}</div>
    </section>`).join("")}
   ${HAS_TTS?"":`<p class="warn">Bu tarayıcı sesli okumayı desteklemiyor. Dinleme soruları atlanacak; YouGlish linkleri çalışır.</p>`}
   <details class="credits"><summary>Fotoğraf ve video kaynakları</summary>
@@ -665,7 +838,7 @@ function startReview(){
   render();
 }
 function topbar(done,total,title){
-  return `<div class="bar"><button class="x" id="quit" aria-label="Haritaya dön">×</button><div class="prog"><i style="width:${Math.min(100,Math.round(done/Math.max(1,total)*100))}%"></i></div><span class="lbl">${esc(title)}</span></div>`;
+  return `<div class="bar"><button class="x" id="quit" aria-label="Haritaya dön">×</button>${metroBar(done,total,title)}<span class="lbl">${esc(title)}</span></div>`;
 }
 function render(){({intro,lesson,learn,quiz,end})[L.stage]()}
 function bindQuit(){$("#quit").onclick=home}
@@ -815,7 +988,7 @@ function end(){
   const nextL=Ln&&!nextR&&LINES[L.li+1];
   app.innerHTML=`${topbar(1,1,L.title)}
    <div class="card"><span class="lbl">${L.review?"Tekrar bitti":"Durak tamam"}</span>
-    ${L.review?"":`${signHTML(L.hw,SIGNS[1])}<p class="note">Bu kelimeyi artık tabelada da okuyabilirsin.</p><div class="row"><button class="speak" id="sp">${SPK}Dinle</button></div>${realLinks(L.hw)}`}
+    ${L.review?"":`<div class="arrival"><div class="atrack"></div><div class="atrain">${TRAIN}</div><div class="asign">${signHTML(L.hw,SIGNS[1])}</div></div><p class="note">Durağa vardın! Bu kelimeyi artık tabelada da okuyabilirsin.</p><div class="row"><button class="speak" id="sp">${SPK}Dinle</button></div>${realLinks(L.hw)}`}
     <div class="mean">${L.right} doğru, ${L.wrong} yanlış · %${acc}</div>
     <p class="note">Bu kelimeler tekrar listene girdi. 10 dakika, 8 saat, 1 gün, 3 gün ve 7 gün sonra tekrar soracağım; bildikçe aralık uzar, unuttuğunda başa döner.</p>
     <div class="row">
@@ -1104,7 +1277,7 @@ function raceQ(){
   const o=shuffle(opts);const st=LINE2[RG.pos%LINE2.length],nx=LINE2[(RG.pos+1)%LINE2.length];
   app.innerHTML=`<div class="bar"><button class="x" id="quit" aria-label="Haritaya dön">×</button><div class="prog"><i style="width:${Math.min(100,RG.pos/LINE2.length*100)}%"></i></div><span class="lbl" id="rt">${Math.ceil((RG.end-Date.now())/1000)} sn</span></div>
    <div class="card race" id="card">
-    <div class="rail"><span class="st now">${esc(st)}</span><span class="train">🚇</span><span class="st">${esc(nx)}</span></div>
+    <div class="rail"><span class="st now">${esc(st)}</span><span class="train">${TRAIN}</span><span class="st">${esc(nx)}</span></div>
     <span class="lbl">${RG.pos} durak · hızlı oku</span>
     <div class="big ${it.h.length>3?"long":""}">${esc(it.h)}</div>
     <div class="opts">${o.map((x,k)=>`<button class="opt" data-v="${esc(x)}"><span class="k">${k+1}</span>${esc(x)}</button>`).join("")}</div></div>`;
@@ -1112,8 +1285,8 @@ function raceQ(){
   const btns=[...app.querySelectorAll(".opt")];
   const pick=b=>{if(b.disabled||Date.now()>=RG.end)return;btns.forEach(x=>x.disabled=true);
     const ok=b.dataset.v===it.r;
-    if(ok){RG.pos++;b.classList.add("ok");grade(it,true);setTimeout(raceQ,250)}
-    else{RG.wrong++;b.classList.add("bad");btns.find(x=>x.dataset.v===it.r).classList.add("ok");grade(it,false);$("#card").classList.add("shake");say(it.h);setTimeout(raceQ,1100)}};
+    if(ok){RG.pos++;b.classList.add("ok");grade(it,true);$("#card .rail")?.classList.add("go");SFX.ok();setTimeout(raceQ,280)}
+    else{RG.wrong++;SFX.bad();b.classList.add("bad");btns.find(x=>x.dataset.v===it.r).classList.add("ok");grade(it,false);$("#card").classList.add("shake");say(it.h);setTimeout(raceQ,1100)}};
   btns.forEach(b=>b.onclick=()=>pick(b));
   document.onkeydown=e=>{if(/^[1-3]$/.test(e.key)&&btns[e.key-1])pick(btns[e.key-1])};
 }
