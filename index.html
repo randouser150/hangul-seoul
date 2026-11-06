@@ -261,6 +261,28 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--l4);outline-offset:
  .card,.line,.stats b,.opt.ok,.stop.next .dot,.stop .mini,.arrival .atrain,.arrival .asign{animation:none}
  .mtrain,.mfill{transition:none}
 }
+/* v5: speed reading, announcements, collapsible extras */
+:root{--lg:#0090d2}
+.more{background:transparent;border:0;padding:0}
+.more summary{cursor:pointer;font-weight:600;color:var(--muted);padding:6px 2px;list-style:none}
+.more summary::before{content:"＋ ";color:var(--fg)}
+.more[open] summary::before{content:"－ "}
+.more .tools{margin-top:10px}
+.clock{width:100%;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.clock i{display:block;height:100%;width:100%;background:var(--c);transform-origin:left;transform:scaleX(1)}
+.clock i.run{transform:scaleX(0);transition:transform 2s linear}
+.stations{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.opt.stn{padding:14px 8px;min-height:72px;border-width:0;font-family:var(--hangul)}
+.opt.stn .big{font-size:clamp(1.4rem,6vw,2rem);font-weight:700}
+.opt.stn.ok{outline:4px solid var(--ok);outline-offset:3px}
+.opt.stn.bad{outline:4px solid var(--bad);outline-offset:3px;opacity:.75}
+.speaker{position:relative;display:flex;align-items:center;gap:14px}
+.waves{display:flex;gap:5px;align-items:center;height:40px}
+.waves i{width:6px;height:10px;border-radius:3px;background:var(--c);opacity:.35}
+.talking .waves i{opacity:1;animation:wave .5s ease-in-out infinite alternate}
+.talking .waves i:nth-child(2){animation-delay:.15s}.talking .waves i:nth-child(3){animation-delay:.3s}
+@keyframes wave{to{height:36px}}
+@media (prefers-reduced-motion:reduce){.clock i.run{transition:none}.talking .waves i{animation:none}}
 
 .ph{margin:0;width:100%;border-radius:12px;overflow:hidden;background:var(--line)}
 .ph img{display:block;width:100%;max-height:52vh;object-fit:contain;background:#000}
@@ -476,6 +498,81 @@ LINES.push(
     {h:"지도", r:"ji-do", m:"harita", n:"Naver 지도 = Naver Map."},
     {h:"길", r:"gil", m:"yol / sokak", n:"Adreslerde ...길 sık geçer."},
     {h:"내려요", r:"nae-ryeo-yo", m:"iniyorum", n:"Otobüste inerken."}]}
+ ]}
+);
+
+/* ---------- packs from town feedback (7 Nov) ---------- */
+/* money at the till and the ATM (finance-guy's list) */
+LINES.find(l=>l.n===4).rounds.push(
+  {name:"Para ve ödeme", hw:"원화", tip:"Kasada ve ATM'de karşına çıkacak kelimeler. En önemlisi: ekran para birimi sorarsa hep 원화 (won).",
+   lesson:[
+    {t:"TRY mi, won mu? Hep 원화", b:"Kart terminali ya da ATM bazen ödemeyi Türk lirası (TRY) ile mi yoksa won (KRW, 원화) ile mi yapmak istediğini sorar. Her zaman 원화 / KRW seç. TRY seçersen dönüşümü terminal kendi kötü kuruyla yapar ve fazla ödersin.", ex:[["원화","won-hwa","won (Kore parası)"],["원화로 해 주세요","won-hwa-ro hae ju-se-yo","won ile yapın lütfen"]]},
+    {t:"Kasada iki soru", b:"Kartla ödeyince kasiyer çoğu zaman 'tek çekim mi?' diye sorar: 일시불. Cevap: 네 (evet). Vergi iadesi için 15.000 won üstü alışverişte 택스프리 sor, pasaportunu (여권) göster.", ex:[["일시불이요","il-ssi-bu-ri-yo","tek çekim"],["택스프리 돼요?","taek-seu-peu-ri dwae-yo","tax free olur mu?"]]},
+    {t:"ATM düğmeleri", b:"Yabancı kart kabul eden ATM'ler (Global ATM) genelde İngilizceye geçer, ama düğmeler Korece de yazar: 출금 = para çekme, 입금 = yatırma, 조회 = bakiye. Ekranda 수수료 görürsen bu komisyondur.", ex:[["출금","chul-geum","para çekme"],["수수료","su-su-ryo","komisyon"]]}],
+   items:[
+    {h:"원화", r:"won-hwa", m:"won (KRW)", n:"Terminal sorarsa hep bunu seç."},
+    {h:"일시불", r:"il-ssi-bul", m:"tek çekim", n:"ㄹ'den sonra ㅅ sertleşir: il-ssi-bul."},
+    {h:"택스프리", r:"taek-seu-peu-ri", m:"tax free", n:"İngilizceden. Kapıda 'Tax Free' yazar."},
+    {h:"여권", r:"yeo-kkwon", m:"pasaport", n:"Okunuşu yeo-kkwon (ㄱ sertleşir). Tax free için gösterilir."},
+    {h:"출금", r:"chul-geum", m:"para çekme", n:"ATM'de bu düğme."},
+    {h:"입금", r:"ip-geum", m:"para yatırma", n:"Buna basma 😄"},
+    {h:"수수료", r:"su-su-ryo", m:"komisyon", n:"ATM ekranında ücret satırı."},
+    {h:"취소", r:"chwi-so", m:"iptal", n:"Yanlış bir şeye bastıysan."}]}
+);
+/* particles: Turkish-like suffixes (my gap list) */
+LINES.find(l=>l.n===7).rounds.push(
+  {name:"Ekler", hw:"저도요", tip:"Korece de Türkçe gibi ekleyen bir dil: ekler kelimenin arkasına gelir. Konuşmada çoğu zaman düşer, ama tabelada ve cümlede tanıman işini kolaylaştırır.",
+   lesson:[
+    {t:"Ünsüzden sonra bir biçim, ünlüden sonra başka", b:"Türkçedeki 'ı/i' uyumu gibi: kelime ünsüzle bitiyorsa 은, 이, 을; ünlüyle bitiyorsa 는, 가, 를 gelir.", ex:[["물은","mu-reun","su (ise)"],["커피는","keo-pi-neun","kahve (ise)"]]},
+    {t:"을/를 = -i hali", b:"Nesneyi gösterir: 'suyu', 'kahveyi'. Siparişte çoğu zaman düşer, 물 주세요 da doğrudur.", ex:[["물을 주세요","mu-reul ju-se-yo","suyu verin"],["커피를 주세요","keo-pi-reul ju-se-yo","kahveyi verin"]]},
+    {t:"에 = -e / -de, 에서 = -de (yaparken)", b:"Gidilen yer ve zaman için 에: 명동에 가요 = Myeongdong'a gidiyorum. Bir şeyin yapıldığı yer için 에서: 여기서 = burada.", ex:[["명동에 가요","myeong-dong-e ga-yo","Myeongdong'a gidiyorum"],["여기서 내려요","yeo-gi-seo nae-ryeo-yo","burada iniyorum"]]},
+    {t:"은/는 konu, 도 = de/da", b:"은/는 cümlenin konusunu işaretler: 저는 = ben (ise). 도 'de/da' demek: 저도요 = ben de.", ex:[["저는 튀르키예 사람이에요","jeo-neun twi-reu-ki-ye sa-ra-mi-e-yo","Ben Türk'üm"],["저도요","jeo-do-yo","ben de"]]}],
+   items:[
+    {h:"은/는", r:"eun/neun", m:"konu eki ('…ise')", n:"Ünsüzden sonra 은, ünlüden sonra 는."},
+    {h:"이/가", r:"i/ga", m:"özne eki", n:"김치가 매워요 = Kimchi acı."},
+    {h:"을/를", r:"eul/reul", m:"-i hali (nesne)", n:"물을 = suyu, 커피를 = kahveyi."},
+    {h:"에", r:"e", m:"-e / -de (yön, zaman)", n:"명동에 = Myeongdong'a."},
+    {h:"에서", r:"e-seo", m:"-de (yaparken) / -den", n:"여기서 = burada."},
+    {h:"도", r:"do", m:"de / da", n:"저도 = ben de."},
+    {h:"저는", r:"jeo-neun", m:"ben (konu)", n:"저 = ben (kibar) + 는."},
+    {h:"저도요", r:"jeo-do-yo", m:"ben de", n:"Sipariş verirken: 'Ben de aynısından.'"}]}
+);
+/* route line: the places on the itinerary (phd-agent's idea); no accommodation info on a public page */
+LINES.splice(1,0,
+ {n:"G", c:"--lg", name:"Gezi güzergâhı", desc:"Programındaki yerlerin adları: tabelada ve haritada göreceğin 30 isim", rounds:[
+  {name:"Havalimanı ve merkez", hw:"인천공항", tip:"İnişten şehir merkezine. 공항 = havalimanı, 시장 = pazar.", items:[
+   {h:"인천공항", r:"in-cheon-gong-hang", m:"Incheon Havalimanı", n:"İneceğin havalimanı."},
+   {h:"김포공항", r:"gim-po-gong-hang", m:"Gimpo Havalimanı", n:"Dönüşte buradan uçuyorsun, Incheon'dan değil!"},
+   {h:"남산", r:"nam-san", m:"Namsan (dağ)", n:"N Seoul Tower burada. 산 = dağ."},
+   {h:"남대문시장", r:"nam-dae-mun-si-jang", m:"Namdaemun Pazarı", n:"Gözlükçüler burada. Pazar günleri kapalı."},
+   {h:"명동", r:"myeong-dong", m:"Myeongdong", n:"Alışveriş ve sokak yemekleri."},
+   {h:"이태원", r:"i-tae-won", m:"Itaewon", n:"Helal seçenekler var."},
+   {h:"용산", r:"yong-san", m:"Yongsan", n:"Elektronik pazarı ve I'Park Mall."},
+   {h:"아이파크몰", r:"a-i-pa-keu-mol", m:"I'Park Mall", n:"Nintendo ve gacha katı."},
+   {h:"전쟁기념관", r:"jeon-jaeng-gi-nyeom-gwan", m:"Savaş Anıtı Müzesi", n:"Kore Savaşı'ndaki Türk birlikleri de anılıyor. 관 = bina/salon."},
+   {h:"국제전자센터", r:"guk-jje-jeon-ja-sen-teo", m:"Kukje Elektronik Merkezi", n:"9. katta figür dükkânları. 국제 okunuşu guk-jje."}]},
+  {name:"Saraylar ve pazarlar", hw:"경복궁", tip:"궁 = saray, 시장 = pazar, 천 = dere. Bunları bir kez tanıyınca tabelaların yarısını çözersin.", items:[
+   {h:"경복궁", r:"gyeong-bok-kkung", m:"Gyeongbokgung Sarayı", n:"ㄱ'den sonra ㄱ sertleşir: -kkung."},
+   {h:"창덕궁", r:"chang-deok-kkung", m:"Changdeokgung Sarayı", n:"Secret Garden burada."},
+   {h:"후원", r:"hu-won", m:"Secret Garden (arka bahçe)", n:"Online rezervasyon ziyaretten 6 gün önce, Kore saatiyle 10:00'da açılır."},
+   {h:"북촌", r:"buk-chon", m:"Bukchon (hanok köyü)", n:"북 = kuzey, 촌 = köy."},
+   {h:"익선동", r:"ik-sseon-dong", m:"Ikseon-dong", n:"Hanok kafeleri. ㄱ + ㅅ → ss."},
+   {h:"을지로", r:"eul-ji-ro", m:"Euljiro", n:"로 = cadde."},
+   {h:"세운상가", r:"se-un-sang-ga", m:"Sewoon Sangga", n:"Elektronik ve maker dükkânları."},
+   {h:"광장시장", r:"gwang-jang-si-jang", m:"Gwangjang Pazarı", n:"빈대떡 ve 마약김밥."},
+   {h:"청계천", r:"cheong-gye-cheon", m:"Cheonggyecheon deresi", n:"천 = dere."},
+   {h:"동대문", r:"dong-dae-mun", m:"Dongdaemun", n:"DDP ve gece pazarları."}]},
+  {name:"ASCS ve alışveriş", hw:"연세대", tip:"Konferans, alışveriş ve günübirlik gezi durakları.", items:[
+   {h:"신촌", r:"sin-chon", m:"Sinchon", n:"Yonsei için ineceğin durak (2. hat)."},
+   {h:"연세대", r:"yeon-se-dae", m:"Yonsei Üniversitesi", n:"Konferans burada. 대 = üniversite."},
+   {h:"홍대", r:"hong-dae", m:"Hongdae", n:"Figür ve kuji dükkânları."},
+   {h:"성수", r:"seong-su", m:"Seongsu", n:"Pop-up mağazalar."},
+   {h:"서울숲", r:"seo-ul-sup", m:"Seoul Forest", n:"숲 = orman."},
+   {h:"강남", r:"gang-nam", m:"Gangnam", n:"COEX ve Starfield kütüphanesi."},
+   {h:"코엑스", r:"ko-ek-seu", m:"COEX", n:"İngilizceden."},
+   {h:"잠실", r:"jam-sil", m:"Jamsil", n:"Lotte World ve Lotte Tower."},
+   {h:"롯데월드", r:"lot-tte-wol-deu", m:"Lotte World", n:"Okunuşu lot-tte: ㅅ sonda t olur, ㄷ'yi sertleştirir."},
+   {h:"수원", r:"su-won", m:"Suwon", n:"Hwaseong kalesi; 1. hatla günübirlik."}]}
  ]}
 );
 
@@ -735,7 +832,8 @@ const norm=s=>String(s).toLowerCase().replace(/[^a-z]/g,"");
 
 /* ---------- spaced repetition (Leitner boxes) + streak ---------- */
 const K=it=>it.h+(it.img?"@"+it.img:"");
-const BOX_WAIT=[0,10*60e3,8*3600e3,24*3600e3,3*24*3600e3,7*24*3600e3];
+/* short trip: intervals are squeezed so every word comes back at least twice before the flight */
+const BOX_WAIT=[0,10*60e3,60*60e3,6*3600e3,24*3600e3,2*24*3600e3];
 S.srs=S.srs||{};S.days=S.days||[];
 function allItems(){const m=new Map();LINES.forEach((Ln,li)=>Ln.rounds.forEach((R,ri)=>R.items.forEach(it=>{if(!m.has(K(it)))m.set(K(it),{...it,c:Ln.c,rid:rid(li,ri)})})));return m}
 const ITEMS=allItems();
@@ -765,14 +863,20 @@ function home(){
   <div class="stats"><div><b>${st}</b><span>gün üst üste</span></div><div><b>${seen}</b><span>görülen kelime</span></div><div><b>${learnedCount()}</b><span>oturmuş kelime</span></div></div>
   <div class="tools">
    <button class="tool hero" id="srs" ${seen?"":"disabled"}><span class="ti">↻ ${due}</span><span><b>Bugünün tekrarı</b><br>${seen?(due?`${Math.min(due,15)} kelime tekrar zamanında. Unutmaya başladıkların önce gelir.`:"Şu an tekrar zamanı gelen yok. Yeni durak aç ya da karışık çalış."):"Bir durak bitirince açılır."}</span></button>
-   <button class="tool" id="lab"><span class="ti">ㅎ+ㅘ=화</span><span><b>Hece atölyesi</b><br>Harfleri birleştir, duyduğun heceyi kur.</span></button>
+   <button class="tool" id="speed"><span class="ti">⚡ 2sn</span><span><b>Hızlı okuma</b><br>Her tabelaya 2 saniye. Metroda olduğu gibi: bağlamsız ve acele.${S.speedBest?` Rekorun: ${S.speedBest}/15.`:""}</span></button>
+   <button class="tool" id="ann"><span class="ti">📢</span><span><b>Anonsu yakala</b><br>"다음 역은…" anonsunu dinle, doğru durak tabelasını seç.</span></button>
    <button class="tool" id="price"><span class="ti">₩</span><span><b>Fiyat oyunu</b><br>Rastgele fiyatları Korece oku ve dinle.</span></button>
-   <button class="tool" id="sent"><span class="ti">물+주세요</span><span><b>Cümle kur</b><br>Kelime ve kalıpları doğru sıraya diz.</span></button>
-   <button class="tool" id="mix" ${seen?"":"disabled"}><span class="ti">🔀</span><span><b>Karışık çalış</b><br>Bitirdiğin duraklardan 12 soru, her türden.</span></button>
-   <button class="tool" id="scene"><span class="ti">💬</span><span><b>Seul'de bir gün</b><br>Markette, restoranda, taksi ve metroda kısa diyaloglar: dinle, doğru cevabı ver.</span></button>
    <button class="tool" id="hunt"><span class="ti">🔎</span><span><b>Tabela avı</b><br>Kalabalık bir sokakta aradığın tabelayı bul. Eczane, tuvalet, döviz…</span></button>
    <button class="tool" id="race"><span class="ti">🚇</span><span><b>Metro yarışı</b><br>60 saniye: her doğru cevap treni bir durak ileri götürür.${S.best?` Rekorun: ${S.best} durak.`:""}</span></button>
+   <button class="tool" id="mix" ${seen?"":"disabled"}><span class="ti">🔀</span><span><b>Karışık çalış</b><br>Bitirdiğin duraklardan 12 soru, her türden.</span></button>
+   <button class="tool" id="lab"><span class="ti">ㅎ+ㅘ=화</span><span><b>Hece atölyesi</b><br>Harfleri birleştir, duyduğun heceyi kur.</span></button>
   </div>
+  <details class="more"><summary>Daha fazla: diyaloglar ve cümle kurma</summary>
+   <div class="tools">
+    <button class="tool" id="scene"><span class="ti">💬</span><span><b>Seul'de bir gün</b><br>Kasa ve ATM, market, restoran, taksi, metro: dinle, doğru cevabı ver.</span></button>
+    <button class="tool" id="sent"><span class="ti">물+주세요</span><span><b>Cümle kur</b><br>Kelime ve kalıpları doğru sıraya diz.</span></button>
+   </div>
+  </details>
   ${LINES.map((L,li)=>`
    <section class="line" style="--c:var(${L.c})">
     <div class="line-head"><span class="badge" style="background:var(${L.c})">${L.n}</span><div><h2>${esc(L.name)}</h2><p>${esc(L.desc)}</p></div></div>
@@ -791,6 +895,7 @@ function home(){
   app.querySelectorAll(".stop").forEach(b=>b.onclick=()=>startRound(+b.dataset.l,+b.dataset.r));
   $("#srs").onclick=startSRS;$("#mix").onclick=startReview;$("#lab").onclick=lab;$("#price").onclick=priceGame;$("#sent").onclick=sentenceGame;
   $("#scene").onclick=sceneMenu;$("#hunt").onclick=huntGame;$("#race").onclick=raceGame;
+  $("#speed").onclick=speedGame;$("#ann").onclick=annGame;
   window.scrollTo(0,0);
 }
 
@@ -807,7 +912,7 @@ function buildQueue(items){
 function startRound(li,ri){
   const Ln=LINES[li],R=Ln.rounds[ri];setColor(Ln.c);
   const q=buildQueue(R.items);
-  L={li,ri,title:`${Ln.n}호선 · ${R.name}`,tip:R.tip,lesson:R.lesson||[],lessonI:0,items:R.items,pool:R.items.length>=4?R.items:Ln.rounds.flatMap(r=>r.items),
+  L={li,ri,title:`${typeof Ln.n==="number"?Ln.n+"호선":Ln.name} · ${R.name}`,tip:R.tip,lesson:R.lesson||[],lessonI:0,items:R.items,pool:R.items.length>=4?R.items:Ln.rounds.flatMap(r=>r.items),
      stage:"intro",learnI:0,queue:q,total:q.length,right:0,wrong:0,hw:R.hw,review:false,vid:R.vid};
   render();
 }
@@ -990,7 +1095,7 @@ function end(){
    <div class="card"><span class="lbl">${L.review?"Tekrar bitti":"Durak tamam"}</span>
     ${L.review?"":`<div class="arrival"><div class="atrack"></div><div class="atrain">${TRAIN}</div><div class="asign">${signHTML(L.hw,SIGNS[1])}</div></div><p class="note">Durağa vardın! Bu kelimeyi artık tabelada da okuyabilirsin.</p><div class="row"><button class="speak" id="sp">${SPK}Dinle</button></div>${realLinks(L.hw)}`}
     <div class="mean">${L.right} doğru, ${L.wrong} yanlış · %${acc}</div>
-    <p class="note">Bu kelimeler tekrar listene girdi. 10 dakika, 8 saat, 1 gün, 3 gün ve 7 gün sonra tekrar soracağım; bildikçe aralık uzar, unuttuğunda başa döner.</p>
+    <p class="note">Bu kelimeler tekrar listene girdi. 10 dakika, 1 saat, 6 saat, 1 gün ve 2 gün sonra tekrar soracağım; uçuşa kadar her kelime birkaç kez döner; bildikçe aralık uzar, unuttuğunda başa döner.</p>
     <div class="row">
      ${nextR?`<button class="btn" id="nx">Sonraki durak: ${esc(nextR.name)}</button>`:""}
      ${nextL?`<button class="btn" id="nl">Sonraki hat: ${esc(nextL.name)}</button>`:""}
@@ -1298,6 +1403,109 @@ function raceEnd(){
    <p class="note">${esc(LINE2[0])} → ${esc(LINE2[Math.min(RG.pos,LINE2.length-1)])} (2. hat). ${RG.wrong} yanlış. Rekorun: ${best} durak. Durak adları da gerçek 2. hat istasyonları; 홍대입구 ve 강남'a kadar gidebilir misin?</p>
    <div class="row"><button class="btn" id="again">Tekrar yarış</button><button class="btn ghost" id="map">Haritaya dön</button></div></div>`;
   $("#again").onclick=raceGame;$("#map").onclick=home;
+}
+
+/* ---------- money scene (finance-guy): DCC trap, single payment, tax free, ATM ---------- */
+SCENES.unshift({id:"pay",icon:"💳",name:"Kasada ve ATM'de",c:"--l4",steps:[
+  {npc:["일시불로 해 드릴까요?","il-ssi-bul-lo hae deu-ril-kka-yo","Tek çekim yapayım mı?"],ask:"Kasiyer kartını alınca ne soruyor?",tr:[["Tek çekim mi?",1],["Poşet ister misin?",0],["Fiş ister misin?",0]]},
+  {ask:"Terminal ekranında iki düğme var: 원화 (KRW) ve TRY. Hangisine basmalısın?",ko:[["원화 (KRW)",1,"Her zaman yerel para birimi. Dönüşümü senin bankan yapar."],["TRY (Türk lirası)",0,"Tuzak! Terminal kendi kuruyla çevirir, fazla ödersin."],["취소 (iptal)",0,"Alışveriş iptal olur."]]},
+  {ask:"Olive Young'da 20.000 won harcadın, vergi iadesi istiyorsun. Ne dersin?",ko:[["택스프리 돼요?",1,"'Tax free olur mu?' 15.000 won ve üstü alışverişte geçerli."],["여권 주세요.",0,"'Pasaport verin' demiş olursun 😄"],["얼마예요?",0,"Fiyat sorarsın."]]},
+  {npc:["여권 주세요.","yeo-kkwon ju-se-yo","Pasaportunuzu verin."],ask:"Ne istiyor?",tr:[["Pasaportunu",1],["Kartını",0],["Fişini",0]]},
+  {ask:"ATM'de para çekeceksin. Hangi düğme?",ko:[["출금",1,"출금 = para çekme."],["입금",0,"입금 = para yatırma."],["조회",0,"조회 = bakiye sorgulama."]]},
+  {ask:"Ekranda '수수료 3,500원' yazıyor. Bu ne?",tr:[["Komisyon (ücret)",1],["İndirim",0],["Bakiyen",0]]},
+  {ask:"ATM yine soruyor: 'KRW mi, TRY mi?' Ne seçersin?",ko:[["원화 (KRW)",1,"Aynı kural: hep won."],["TRY (Türk lirası)",0,"ATM'de de aynı tuzak."],["출금",0,"Bu para çekme düğmesi, para birimi değil."]]}]});
+
+/* ---------- "Hızlı okuma": 2 seconds per sign (phd-agent) ---------- */
+let SP=null;
+function speedGame(){
+  setColor("--l2");
+  let pool=[...ITEMS.values()].filter(it=>S.srs[K(it)]&&!it.img&&!it.choices&&!it.h.includes("/"));
+  if(pool.length<15)pool=pool.concat([...ITEMS.values()].filter(it=>!it.img&&!it.choices&&!it.h.includes("/")&&syllables(it.h).length<=4));
+  SP={pool:shuffle([...new Map(pool.map(i=>[i.h,i])).values()]).slice(0,15),i:0,right:0,timer:null};
+  speedQ();
+}
+function speedQ(){
+  document.onkeydown=null;clearTimeout(SP.timer);
+  if(SP.i>=SP.pool.length)return speedEnd();
+  const it=SP.pool[SP.i];const o=shuffle(options(it,SP.pool).slice(0,3).concat([]));if(!o.includes(it.r))o[0]=it.r;const opts=shuffle(o);
+  const style=SIGNS[1+(Math.random()*(SIGNS.length-1)|0)];
+  app.innerHTML=`${topbar(SP.i,SP.pool.length,"Hızlı okuma")}
+   <div class="card" id="card"><span class="lbl">${SP.i+1}/${SP.pool.length} · 2 saniye</span>
+    <div class="clock"><i id="clk"></i></div>
+    ${signHTML(it.h,style)}
+    <div class="opts">${opts.map((x,k)=>`<button class="opt" data-v="${esc(x)}"><span class="k">${k+1}</span>${esc(x)}</button>`).join("")}</div>
+    <p class="fb" id="fb" aria-live="polite"></p></div>`;
+  bindQuit();$("#quit").onclick=()=>{clearTimeout(SP.timer);home()};
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{const c=$("#clk");if(c)c.classList.add("run")}));
+  const btns=[...app.querySelectorAll(".opt")];
+  const finish=(b)=>{if(btns[0].disabled)return;clearTimeout(SP.timer);btns.forEach(x=>x.disabled=true);
+    const ok=!!b&&b.dataset.v===it.r;btns.find(x=>x.dataset.v===it.r).classList.add("ok");if(b&&!ok)b.classList.add("bad");
+    grade(it,ok);if(ok)SP.right++;else{$("#card").classList.add("shake");say(it.h)}
+    $("#fb").className="fb "+(ok?"ok":"bad");$("#fb").textContent=ok?`Doğru! ${it.m}`:`${b?"Doğrusu":"Süre doldu"}: ${it.r} · ${it.m}`;
+    setTimeout(()=>{SP.i++;speedQ()},ok?650:1600)};
+  btns.forEach(b=>b.onclick=()=>finish(b));
+  document.onkeydown=e=>{if(/^[1-3]$/.test(e.key)&&btns[e.key-1])finish(btns[e.key-1])};
+  SP.timer=setTimeout(()=>finish(null),2000);
+}
+function speedEnd(){
+  const best=Math.max(S.speedBest||0,SP.right);const rec=SP.right>(S.speedBest||0);S.speedBest=best;save();
+  app.innerHTML=`${topbar(1,1,"Hızlı okuma")}<div class="card"><span class="lbl">Bitti</span>
+   <div class="mean">${SP.right}/${SP.pool.length} tabelayı 2 saniyede okudun${rec?" · yeni rekor! 🎉":""}</div>
+   <p class="note">Metroda tabelaya bakıp anında okuyabilmek için bunu her gün bir tur oyna. Kaçırdıkların tekrar listende önce gelecek.</p>
+   <div class="row"><button class="btn" id="again">Tekrar</button><button class="btn ghost" id="map">Haritaya dön</button></div></div>`;
+  bindQuit();$("#again").onclick=speedGame;$("#map").onclick=home;
+}
+
+/* ---------- "Anonsu yakala": subway announcements (muhtar) ---------- */
+const ANN_STATIONS=[...new Set(["명동","충무로","동대문","혜화","시청","광화문","안국","경복궁","용산","이태원","신촌","홍대입구","성수","잠실","강남","교대","을지로입구","왕십리","건대입구","합정","삼성","선릉","사당","공덕","여의도","노원","수원"].concat(typeof LINE2!=="undefined"?LINE2:[]))].filter(s=>!/\d/.test(s)&&!s.endsWith("역"));
+function annStyle(){return ["metro","serif","store"][Math.random()*3|0]}
+let AN=null;
+function annGame(){setColor("--l3");AN={i:0,n:10,right:0};annQ()}
+function annQ(){
+  document.onkeydown=null;
+  if(AN.i>=AN.n)return annEnd();
+  const kind=["next","next","this","door"][Math.random()*4|0];
+  let line,romanS,tr,opts,ans,isSign=true;
+  if(kind==="door"){
+    const right=Math.random()<.5;const side=right?"오른쪽":"왼쪽";
+    line=`내리실 문은 ${side}입니다.`;romanS=`nae-ri-sil mu-neun ${right?"o-reun-jjo":"oen-jjo"}-gim-ni-da`;tr=`İneceğiniz kapı ${right?"sağ":"sol"} taraftadır.`;
+    opts=shuffle(["오른쪽 (sağ)","왼쪽 (sol)"]);ans=right?"오른쪽 (sağ)":"왼쪽 (sol)";isSign=false;
+  }else{
+    const st=ANN_STATIONS[Math.random()*ANN_STATIONS.length|0];
+    const others=shuffle(ANN_STATIONS.filter(x=>x!==st)).sort((a,b)=>Math.abs(a.length-st.length)-Math.abs(b.length-st.length)).slice(0,3);
+    line=kind==="next"?`다음 역은 ${st}역입니다.`:`이번 역은 ${st}역입니다.`;
+    romanS=(kind==="next"?"da-eum yeo-geun ":"i-beon yeo-geun ")+syllables(st).map(sylRoman).join("")+"-yeo-gim-ni-da";
+    tr=(kind==="next"?"Sonraki durak: ":"Bu durak: ")+st+".";
+    opts=shuffle([st,...others]);ans=st;
+  }
+  const q=kind==="door"?"Kapılar hangi taraftan açılacak?":kind==="next"?"Sonraki durak hangisi?":"Şu an hangi duraktasın?";
+  app.innerHTML=`${topbar(AN.i,AN.n,"Anonsu yakala")}
+   <div class="card" id="card"><span class="lbl">Anons ${AN.i+1}/${AN.n}</span>
+    <div class="speaker"><button class="bigspeak" id="ls" aria-label="Anonsu tekrar dinle">${SPK}</button><div class="waves"><i></i><i></i><i></i></div></div>
+    <p class="q">${q}</p>
+    <div class="${isSign?"stations":"opts hangul small"}">${opts.map((x,k)=>isSign
+      ?`<button class="opt stn sign sign-${annStyle()}" data-v="${esc(x)}"><span class="big">${esc(x)}</span></button>`
+      :`<button class="opt" data-v="${esc(x)}"><span class="k">${k+1}</span>${esc(x)}</button>`).join("")}</div>
+    <p class="fb" id="fb" aria-live="polite"></p><div id="after"></div></div>`;
+  bindQuit();
+  const play=()=>{$("#card").classList.add("talking");say(line,{rate:.9,onend:()=>$("#card")?.classList.remove("talking")})};
+  setTimeout(play,250);$("#ls").onclick=play;
+  const btns=[...app.querySelectorAll(".opt")];
+  btns.forEach(b=>b.onclick=()=>{if(b.disabled)return;btns.forEach(x=>x.disabled=true);
+    const ok=b.dataset.v===ans;if(ok)AN.right++;else $("#card").classList.add("shake");
+    btns.find(x=>x.dataset.v===ans).classList.add("ok");if(!ok)b.classList.add("bad");
+    $("#fb").className="fb "+(ok?"ok":"bad");$("#fb").textContent=ok?"Doğru!":"Olmadı.";
+    $("#after").innerHTML=`<p class="note"><b>${esc(line)}</b><br>${esc(romanS)}<br>= ${esc(tr)}</p>
+      <p class="tiny">다음 = sonraki, 이번 = bu, 역 = istasyon, 내리실 문 = ineceğiniz kapı.</p>
+      <div class="row"><button class="speak" id="rep">${SPK}Tekrar dinle</button><button class="btn" id="cont">Sonraki</button></div>`;
+    $("#rep").onclick=play;$("#cont").onclick=()=>{AN.i++;annQ()};$("#cont").focus();
+    const day=new Date().toISOString().slice(0,10);if(!S.days.includes(day)){S.days.push(day);save()}});
+}
+function annEnd(){
+  app.innerHTML=`${topbar(1,1,"Anonsu yakala")}<div class="card"><span class="lbl">Bitti</span><div class="mean">${AN.right}/${AN.n} anons</div>
+   <p class="note">Gerçek metroda anons önce Korece, sonra İngilizce (bazen Çince ve Japonca) yapılır. Korece kısmı yakalarsan inmeye hazırlanmak için birkaç saniye kazanırsın.</p>
+   <div class="row"><button class="btn" id="again">Tekrar</button><button class="btn ghost" id="map">Haritaya dön</button></div></div>`;
+  bindQuit();$("#again").onclick=annGame;$("#map").onclick=home;
 }
 </script>
 
